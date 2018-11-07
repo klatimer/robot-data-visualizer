@@ -2,7 +2,6 @@
 This class should handle downloading and caching data from the internet into a
 'data' folder in the project root directory.
 """
-import sys
 import os
 
 class DataLoader:

@@ -1,5 +1,6 @@
 import unittest
 
+
 class BasicTest(unittest.TestCase):
 
     def setUp(self):
@@ -20,6 +21,7 @@ class BasicTest(unittest.TestCase):
     def test_remove_item(self):
         self.list.remove('b')
         self.assertEqual(['a', 'c'], self.list)
+
 
 if __name__ == '__main__':
     unittest.main()
