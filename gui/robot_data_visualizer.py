@@ -1,36 +1,63 @@
 """
 This file is the main viewing window of the application.
 """
-from tkinter import *
+import tkinter as tk
 
-class RobotDataVisualizer:
-    def __init__(self, master):
+from numpy import arange, sin, pi
+
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
+from matplotlib.backend_bases import key_press_handler
+
+
+class RobotDataVisualizer(tk.Frame):
+
+
+    def __init__(self, master=None):
+        super().__init__(master)
         self.master = master
-        master.title("Robot Data Visualizer")
+        self.master.title("Robot Data Visualizer")
+        self.create_widgets()
 
-        self.label = Label(master, text="This is a label")
+    def create_widgets(self):
+
+        self.label = tk.Label(self.master, text="This is a label")
         self.label.pack()
 
-        # greet is the "event handler" function for the button press
-        self.greet_button = Button(master, text="Greet", command=self.greet)
+        self.greet_button = tk.Button(self.master, text="Greet", command=self.greet)
         self.greet_button.pack()
 
-        self.close_button = Button(master, text="Close", command=master.quit)
+        self.close_button = tk.Button(self.master, text="Close", command=self.master.destroy)
 
-        """
-        f = Figure(figsize=(5,5), dpi=100)
+        f = Figure(figsize=(5, 4), dpi=100)
         a = f.add_subplot(111)
-        a.plot([1, 2, 3, 4, 5, 6, 7, 8], [5, 6, 2, 8, 7, 1, 9, 8])
-        canvas = FigureCanvasTkAgg(f, )
-        canvas.show()
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        """
+        t = arange(0.0, 3.0, 0.01)
+        s = sin(2 * pi * t)
 
-    def greet(self ):
+        a.plot(t, s)
+
+        # a tk.DrawingArea
+        self.canvas = FigureCanvasTkAgg(f, master=root)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.canvas.mpl_connect('key_press_event', self.on_key_event)
+
+
+    def on_key_event(self, event):
+
+        print('you pressed %s' % event.key)
+        key_press_handler(event, self.canvas)
+
+
+    def greet(self):
+
         print("Greetings!")
 
 
+
 if __name__ == '__main__':
-    root = Tk()
-    gui = RobotDataVisualizer(root)
+    root = tk.Tk()
+    gui = RobotDataVisualizer(master=root)
     root.mainloop()
