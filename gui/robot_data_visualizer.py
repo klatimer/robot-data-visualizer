@@ -17,6 +17,15 @@ class RobotDataVisualizer:
 
         self.close_button = Button(master, text="Close", command=master.quit)
 
+        """
+        f = Figure(figsize=(5,5), dpi=100)
+        a = f.add_subplot(111)
+        a.plot([1, 2, 3, 4, 5, 6, 7, 8], [5, 6, 2, 8, 7, 1, 9, 8])
+        canvas = FigureCanvasTkAgg(f, )
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        """
+
     def greet(self ):
         print("Greetings!")
 
