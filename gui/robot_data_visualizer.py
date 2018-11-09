@@ -44,13 +44,10 @@ class RobotDataVisualizer(tk.Frame):
         self.canvas = canvas
 
     def on_key_event(self, event):
-
         print('you pressed %s' % event.key)
         key_press_handler(event, self.canvas)
 
-
     def greet(self):
-
         print("Greetings!")
 
 
