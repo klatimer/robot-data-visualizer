@@ -13,6 +13,7 @@ import tkinter as tk
 
 
 class VisualizerFrame(tk.Frame):
+
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, bg="red")
         self.parent = parent
@@ -44,6 +45,7 @@ class VisualizerFrame(tk.Frame):
 
 
 class ToolbarFrame(tk.Frame):
+
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
@@ -58,19 +60,61 @@ class ToolbarFrame(tk.Frame):
     def do_nothing(self):
         print("Ok, ok, I won't ...")
 
-class SlamControl(tk.Frame):
+
+class ControlFrame(tk.Frame):
+
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, width=400)
         self.parent = parent
+        self.slam_control = None
+        self.map_control = None
         self.widgets()
 
+    class SlamControlFrame(tk.Frame):
+
+        def __init__(self, parent):
+            tk.Frame.__init__(self, parent, width=400)
+            self.parent = parent
+            self.widgets()
+
+        def widgets(self):
+            label = tk.Label(self, text="SLAM Control", bg="blue", fg="white")
+            label.pack(fill=tk.X)
+
+            run_button = tk.Button(self, text="Run", bg="green", fg="white")
+            run_button.pack(side=tk.LEFT)
+
+            stop_button = tk.Button(self, text="Stop", bg="red", fg="white")
+            stop_button.pack(side=tk.RIGHT)
+
+
+    class MapControlFrame(tk.Frame):
+
+        def __init__(self, parent):
+            tk.Frame.__init__(self, parent, width=400)
+            self.parent = parent
+            self.widgets()
+
+        def widgets(self):
+            label = tk.Label(self, text="Map Control", bg="green", fg="white")
+            label.pack(fill=tk.X)
+
+            on_button = tk.Button(self, text="On", bg="green", fg="white")
+            on_button.pack(side=tk.LEFT)
+
+            off_button = tk.Button(self, text="Off", bg="red", fg="white")
+            off_button.pack(side=tk.RIGHT)
+
     def widgets(self):
-        label = tk.Label(self, text="SLAM Control Frame", bg="red", fg="white")
-        label.pack(fill=tk.X)
+        self.slam_control = self.SlamControlFrame(self)
+        self.slam_control.pack(fill=tk.X)
+        self.map_control = self.MapControlFrame(self)
+        self.map_control.pack(fill=tk.X)
 
 
 # Main window for the application
 class MainWindow(tk.Tk):
+
     def __init__(self, parent):
         tk.Tk.__init__(self, parent)
         self.parent = parent
@@ -78,6 +122,7 @@ class MainWindow(tk.Tk):
         self.mainWidgets()
 
     def mainWidgets(self):
+        # Toolbar
         self.toolbar = ToolbarFrame(self)
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
 
@@ -85,8 +130,8 @@ class MainWindow(tk.Tk):
         self.status = tk.Label(self, text="Preparing to do nothing", bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status.pack(side=tk.BOTTOM, fill=tk.X)
 
-        # Controls for running the SLAM algorithm
-        self.control = SlamControl(self)
+        # Controls - SLAM and Map
+        self.control = ControlFrame(self)
         self.control.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Main viewing window
