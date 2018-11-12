@@ -82,6 +82,9 @@ class ControlFrame(tk.Frame):
             label = tk.Label(self, text="SLAM Control", bg="blue", fg="white")
             label.pack(side=tk.TOP, fill=tk.X)
 
+            speed_scale = tk.Scale(self, orient=tk.HORIZONTAL)
+            speed_scale.pack(side=tk.TOP)
+
             show_its_button = tk.Checkbutton(self, text="show iterations")
             show_its_button.pack(side=tk.TOP)
 
@@ -131,7 +134,7 @@ class MainWindow(tk.Tk):
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
 
         # Status bar
-        self.status = tk.Label(self, text="Preparing to do nothing", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status = tk.Label(self, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Controls - SLAM and Map
