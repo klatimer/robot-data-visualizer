@@ -15,12 +15,17 @@ import tkinter as tk
 class VisualizerFrame(tk.Frame):
 
     def __init__(self, parent):
-        tk.Frame.__init__(self, parent, bg="red")
+        tk.Frame.__init__(self, parent)
         self.parent = parent
+        self.label = None
         self.canvas = None
         self.widgets()
 
     def widgets(self):
+        # Label for visualizer
+        self.label = tk.Label(self, text="Viewer")
+        self.label.pack(side=tk.TOP)
+
         f = Figure(figsize=(5, 4), dpi=100)
         a = f.add_subplot(111)
         t = arange(0.0, 3.0, 0.01)
@@ -31,13 +36,8 @@ class VisualizerFrame(tk.Frame):
         # a tk.DrawingArea
         self.canvas = FigureCanvasTkAgg(f, master=self.master)
         self.canvas.draw()
-        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # self.canvas.get_tk_widget().grid(row=0, column=0)
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         self.canvas.mpl_connect('key_press_event', self.on_key_event)
-
-        # Label for visualizer
-        self.label = tk.Label(self, text="Viewer")
-        self.label.pack()
 
     def on_key_event(self, event):
         print('you pressed %s' % event.key)
@@ -54,6 +54,7 @@ class ToolbarFrame(tk.Frame):
     def widgets(self):
         insert_button = tk.Button(self, text="Insert Image", command=self.do_nothing)
         insert_button.pack(side=tk.LEFT, padx=2, pady=2)
+
         print_button = tk.Button(self, text="Print", command=self.do_nothing)
         print_button.pack(side=tk.LEFT, padx=2, pady=2)
 
@@ -79,7 +80,10 @@ class ControlFrame(tk.Frame):
 
         def widgets(self):
             label = tk.Label(self, text="SLAM Control", bg="blue", fg="white")
-            label.pack(fill=tk.X)
+            label.pack(side=tk.TOP, fill=tk.X)
+
+            show_its_button = tk.Checkbutton(self, text="show iterations")
+            show_its_button.pack(side=tk.TOP)
 
             run_button = tk.Button(self, text="Run", bg="green", fg="white")
             run_button.pack(side=tk.LEFT)
@@ -96,7 +100,7 @@ class ControlFrame(tk.Frame):
             self.widgets()
 
         def widgets(self):
-            label = tk.Label(self, text="Map Control", bg="green", fg="white")
+            label = tk.Label(self, text="Map Control", bg="blue", fg="white")
             label.pack(fill=tk.X)
 
             on_button = tk.Button(self, text="On", bg="green", fg="white")
@@ -136,7 +140,7 @@ class MainWindow(tk.Tk):
 
         # Main viewing window
         self.window = VisualizerFrame(self)
-        self.window.pack(side=tk.LEFT)
+        self.window.pack(side=tk.LEFT, padx=2, pady=2)
 
 
 if __name__ == '__main__':
