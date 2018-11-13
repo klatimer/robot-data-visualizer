@@ -13,6 +13,9 @@ import tkinter as tk
 
 
 class VisualizerFrame(tk.Frame):
+    """
+    This class represents the frame where the main visualization takes place.
+    """
 
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
@@ -45,6 +48,9 @@ class VisualizerFrame(tk.Frame):
 
 
 class ToolbarFrame(tk.Frame):
+    """
+    This class represents the toolbar at the top of the window.
+    """
 
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
@@ -63,6 +69,10 @@ class ToolbarFrame(tk.Frame):
 
 
 class ControlFrame(tk.Frame):
+    """
+    This class represents the controls on the right hand side of the main
+    window. There are two nested classes for the slam and map controls.
+    """
 
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, width=400)
@@ -119,8 +129,12 @@ class ControlFrame(tk.Frame):
         self.map_control.pack(fill=tk.X)
 
 
-# Main window for the application
 class MainWindow(tk.Tk):
+    """
+    This is the main window for the application. Here the main layout is
+    established using a combination of the above classes and individual
+    tkinter widgets.
+    """
 
     def __init__(self, parent):
         tk.Tk.__init__(self, parent)
