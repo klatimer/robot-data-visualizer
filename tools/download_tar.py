@@ -25,7 +25,12 @@ def download_tar(base_name, date):
     tmp = '%s/sensor_data/' % base_name
     fname = '%s_sen.tar.gz' % date
     url = tmp + fname
-    urllib.request.urlretrieve(url, os.path.join(data_dir, fname))
+    path = os.path.join(data_dir, fname)
+    if not os.path.exists(path):
+        urllib.request.urlretrieve(url, path)
+    else:
+        pass
+    return fname
 
 
 if __name__ == '__main__':

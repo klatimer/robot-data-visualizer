@@ -11,7 +11,7 @@ def tar_extract(file_name):
         tar.extractall()
         tar.close()
 
-#change filename to match whatever file you want
-file_name = '2013-01-10_sen.tar.gz'
-extraction = tar_extract(file_name)
+if __name__ == '__main__':
+    file_name = '2013-01-10_sen.tar.gz'
+    extraction = tar_extract(file_name)
 
