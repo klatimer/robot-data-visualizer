@@ -4,7 +4,10 @@ from staticmap import StaticMap, Line
 
 m = StaticMap(600, 600, 80)
 
-coordinates = [[-122.3296, 47.6786], [-122.3066, 47.6562]]
+greenlake = [-122.3296, 47.6786]
+udub = [-122.3066, 47.6562]
+
+coordinates = [greenlake, udub]
 line_outline = Line(coordinates, 'white', 6)
 line = Line(coordinates, '#D2322D', 4)
 
