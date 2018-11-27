@@ -7,17 +7,10 @@
 #   python read_gps.py gps.csv
 #
 
-import sys
-import matplotlib.pyplot as plt
 import numpy as np
 
-def main(args):
-
-    if len(sys.argv) < 2:
-        print ('Please specify gps file')
-        return 1
-
-    gps = np.loadtxt(sys.argv[1], delimiter = ",")
+def read_gps(filename):
+    gps = np.loadtxt(filename, delimiter = ",")
 
     num_sats = gps[:, 2]
     lat = gps[:, 3]
@@ -34,22 +27,8 @@ def main(args):
     x = r * np.cos(lat0) * np.sin(dLng)
     y = r * np.sin(dLat)
 
-    plt.figure()
-    plt.subplot(1, 2, 1)
-    plt.scatter(x, y, 1, c=alt, linewidth=0)
-    plt.axis('equal')
-    plt.title('By altitude')
-    plt.colorbar()
-
-    plt.subplot(1, 2, 2)
-    plt.scatter(x, y, c=num_sats, linewidth=0)
-    plt.axis('equal')
-    plt.title('By number of satellites')
-    plt.colorbar()
-
-    plt.show()
-
-    return 0
+    # Return list of tuples
+    return zip(x, y)
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    data = read_gps('../data/2013-01-10/gps.csv')
