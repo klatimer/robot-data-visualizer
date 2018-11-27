@@ -28,7 +28,8 @@ def read_gps(filename):
     y = r * np.sin(dLat)
 
     # Return list of tuples
-    return zip(x, y)
+    gps_data = list(zip(x, y))
+    return gps_data
 
 if __name__ == '__main__':
     data = read_gps('../data/2013-01-10/gps.csv')
