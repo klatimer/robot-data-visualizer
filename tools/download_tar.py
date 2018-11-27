@@ -19,11 +19,16 @@ def ensure_data_dir_exists():
     data_dir = p
 
 # Download the tar file and put it in the data directory
-def download_tar(base_name, date):
+def download_tar(base_name, date, data_type):
     global data_dir
     os.chdir(data_dir)
-    tmp = '%s/sensor_data/' % base_name
-    fname = '%s_sen.tar.gz' % date
+    if data_type is 'sensor_data': # miscellaneous sensors, incl. GPS
+        tmp = '%s/sensor_data/' % base_name
+        fname = '%s_sen.tar.gz' % date
+    elif data_type is 'hokuyo': # hokuyo lidar scanner
+        tmp = '%s/hokuyo_data/' % base_name
+        fname = '%s_hokuyo.tar.gz' % date
+    # TODO throw exception for invalid data_type
     url = tmp + fname
     path = os.path.join(data_dir, fname)
     if not os.path.exists(path):
