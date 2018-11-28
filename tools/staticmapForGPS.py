@@ -2,12 +2,11 @@ from staticmap import StaticMap, Line
 import sys
 
 sys.path.append('..')
-
-from data_manager import DataManager
+import tools
 
 def mapForGPS():
 
-    dm = DataManager()
+    dm = tools.data_manager.DataManager()
     # Download and extract sensor data
     dm.setup_data_files('sensor_data')
     # load gps

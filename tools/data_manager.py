@@ -4,11 +4,19 @@
 import os
 # import sys
 # sys.path.append('..')
+# __all__=['DataManager']
+# from tools import *
 
-from read_hokuyo_30m import read_hokuyo
-from tar_extract import tar_extract
-from download_tar import download_tar
-from data_loader import DataLoader
+from tools.read_hokuyo_30m import read_hokuyo
+from tools.tar_extract import tar_extract
+from tools.download_tar import download_tar
+from tools.data_loader import DataLoader
+
+# from tools import read_hokuyo
+# from tools import tar_extract
+# from tools import download_tar
+# from data_loader import DataLoader
+# from tools import *
 
 class DataManager:
 
@@ -38,7 +46,7 @@ class DataManager:
 
     def load_all(self):
         self.load_gps()
-        self.load_lidar() # Note this could take a while - loads a lot of samples
+        self.load_lidar()    # Note this could take a while - loads a lot of samples
 
     def get_data(self, key=None):
         if key is None:

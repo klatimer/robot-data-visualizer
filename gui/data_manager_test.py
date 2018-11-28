@@ -3,12 +3,12 @@
 import sys
 sys.path.append('..')
 
-from tools.data_manager import DataManager
+import tools.data_manager as td
 
 
 def main():
     try:
-        dm = DataManager()
+        dm = td.DataManager()
         # Download and extract sensor data
         dm.setup_data_files('sensor_data')
         # Download and extract data for the hokuyo lidar scanner
