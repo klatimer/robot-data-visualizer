@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # This script downloads a tar file from the UMich robotics dataset
 # Reference: http://blog.ppkt.eu/2014/06/python-urllib-and-tarfile/
 
@@ -20,6 +19,7 @@ def ensure_data_dir_exists():
 
 # Download the tar file and put it in the data directory
 def download_tar(base_name, date, data_type):
+    ensure_data_dir_exists()
     global data_dir
     os.chdir(data_dir)
     if data_type is 'sensor_data': # miscellaneous sensors, incl. GPS
@@ -35,11 +35,5 @@ def download_tar(base_name, date, data_type):
         urllib.request.urlretrieve(url, path)
     else:
         pass
+    # os.chdir('gui') # FIXME
     return fname
-
-
-if __name__ == '__main__':
-    base_name = 'http://robots.engin.umich.edu/nclt'
-    date = '2013-01-10'
-    ensure_data_dir_exists()
-    download_tar(base_name, date)

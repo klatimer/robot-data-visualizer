@@ -111,3 +111,6 @@ venv.bak/
 # data directory
 data
 data/*
+
+# Images
+*.png

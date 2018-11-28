@@ -1,4 +1,3 @@
-# !/usr/bin/python
 #Code copied from: http://robots.engin.umich.edu/nclt/python/read_gps.py and converted to Python3
 # Example code to read and plot the gps data.
 #GPS data header::::: time (microseconds since 1970) : Unknown : Number of satalites : Latitude (radians) : Longitude (radians) : Elevation (meters above sea level) : Unknown : Unknown
@@ -30,6 +29,3 @@ def read_gps(filename):
     # Return list of tuples
     gps_data = list(zip(x, y))
     return gps_data
-
-if __name__ == '__main__':
-    data = read_gps('../data/2013-01-10/gps.csv')
