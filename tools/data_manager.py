@@ -2,14 +2,13 @@
 #   by the main application.
 
 import os
-import sys
-sys.path.append('..')
+# import sys
+# sys.path.append('..')
 
-# from tools.read_gps import read_gps
-from tools.read_hokuyo_30m import read_hokuyo
-from tools.tar_extract import tar_extract
-from tools.download_tar import download_tar
-from tools.data_loader import DataLoader
+from read_hokuyo_30m import read_hokuyo
+from tar_extract import tar_extract
+from download_tar import download_tar
+from data_loader import DataLoader
 
 class DataManager:
 

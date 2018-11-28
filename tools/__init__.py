@@ -1,1 +1,1 @@
-__all__ = ['data_manager', 'download_tar', 'read_gps', 'read_hokuyo_30m', 'tar_extract']
+__all__ = ['data_loader', 'data_manager', 'download_tar', 'read_gps', 'read_hokuyo_30m', 'tar_extract', 'staticmapForGPS']
