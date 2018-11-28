@@ -1,10 +1,11 @@
 from staticmap import StaticMap, Line
+import os
 import sys
 
 sys.path.append('..')
 import tools
 
-def mapForGPS():
+def map_for_gps():
 
     dm = tools.data_manager.DataManager()
     # Download and extract sensor data
@@ -27,8 +28,10 @@ def mapForGPS():
     m.add_line(line)
 
     image = m.render()
+    # Put image in the corresponding data directory
+    os.chdir(dm.data_dir)
     image.save('umich.png')
 
 
 if __name__ == '__main__':
-    mapForGPS()
+    map_for_gps()

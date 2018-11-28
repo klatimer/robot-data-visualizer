@@ -12,19 +12,15 @@ from tools.tar_extract import tar_extract
 from tools.download_tar import download_tar
 from tools.data_loader import DataLoader
 
-# from tools import read_hokuyo
-# from tools import tar_extract
-# from tools import download_tar
-# from data_loader import DataLoader
-# from tools import *
 
 class DataManager:
 
     def __init__(self):
-        self.owd = os.getcwd() # original working directory (project root)
-        self.data_dir = 'data'
+        self.owd, _ = os.path.split(os.path.dirname(os.path.abspath(__file__)))
+        self.data_dir_name = 'data'
         self.base_name = 'http://robots.engin.umich.edu/nclt'
         self.date = '2013-01-10'
+        self.data_dir = os.path.join(self.owd, os.path.join(self.data_dir_name, self.date))
         self.data_dict = {}
 
     def setup_data_files(self, data_type):
@@ -34,14 +30,14 @@ class DataManager:
     def load_gps(self):
         # Loads a list of ordered (x,y) tuples into the 'gps' key of the data dictionary
         os.chdir(self.owd)
-        gps_file_path = os.path.join(self.data_dir, os.path.join(self.date, 'gps.csv'))
+        gps_file_path = os.path.join(self.data_dir_name, os.path.join(self.date, 'gps.csv'))
         data_loader = DataLoader(gps_file_path)
         self.data_dict['gps'] = data_loader.get_gps_dictionary()
         self.data_dict['gps_range'] = data_loader.get_gps_range()
 
     def load_lidar(self, num_samples):
         os.chdir(self.owd)
-        lidar_file_path = os.path.join(self.data_dir, os.path.join(self.date, 'hokuyo_30m.bin'))
+        lidar_file_path = os.path.join(self.data_dir_name, os.path.join(self.date, 'hokuyo_30m.bin'))
         self.data_dict['lidar'] = read_hokuyo(lidar_file_path, num_samples)
 
     def load_all(self):
