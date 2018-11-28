@@ -1,8 +1,8 @@
 """
 This class is responsible for precessing data correctly corresponding to the user's choice.
 """
-# import os
 import numpy as np
+# __all__=['DataLoader']
 
 class DataLoader:
     """
