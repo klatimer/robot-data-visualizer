@@ -1,7 +1,7 @@
 """
 This class is responsible for precessing data correctly corresponding to the user's choice.
 """
-import os
+# import os
 import numpy as np
 
 class DataLoader:
@@ -15,40 +15,40 @@ class DataLoader:
 
     """
     def __init__(self, choose):
-        self.data_dir = '/data'
+        # self.data_dir = '/data'
         self.chosen_data = choose
         self.gps_dictionary = self.load_data()
 
-    def choose_dataset(self):
-        """
-        Get user's choose and then return a correct file name
-        :param choose: User's choose of which dataset to use
-        :return: The corresponding file name
-        """
-        if self.chosen_data == 'Dataset1':
-            return 'gps1.csv'
-        elif self.chosen_data == 'Dataset2':
-            return 'gps2.csv'
-        elif self.chosen_data == 'Dataset3':
-            return 'gps3.csv'
+    # def choose_dataset(self):
+    #     """
+    #     Get user's choose and then return a correct file name
+    #     :param choose: User's choose of which dataset to use
+    #     :return: The corresponding file name
+    #     """
+    #     if self.chosen_data == 'Dataset1':
+    #         return 'gps1.csv'
+    #     elif self.chosen_data == 'Dataset2':
+    #         return 'gps2.csv'
+    #     elif self.chosen_data == 'Dataset3':
+    #         return 'gps3.csv'
 
-    def choose_path(self):
-        """
-        To the directory fot the data, get the path.
-        :return: The path of the data files
-        """
-        path = os.path.abspath(os.path.dirname(os.getcwd()))
-        path += self.data_dir
-        return path
+    # def choose_path(self):
+    #     """
+    #     To the directory fot the data, get the path.
+    #     :return: The path of the data files
+    #     """
+    #     path = os.path.abspath(os.path.dirname(os.getcwd()))
+    #     path += self.data_dir
+    #     return path
 
     def load_data(self):
         """
         Load the data chosen by user, and get the gps's three coordinate from data file.
         :return: A dictionary contains three gps coordinate.
         """
-        path = self.choose_path()
-        os.chdir(path)
-        file_name = self.choose_dataset()
+        # path = self.choose_path()
+        # os.chdir(path)
+        file_name = self.chosen_data
         gps = np.loadtxt(file_name, delimiter=",")
 
         # Get three coordinates of GPS
@@ -89,9 +89,9 @@ class DataLoader:
 
         return (lat_range, lng_range, alt_range)
 
-if __name__ == '__main__':
-    # do something
-    dl = DataLoader('Dataset1')
-    dict = dl.get_gps_dictionary()
-    range = dl.get_gps_range()
-    print(range)
+# if __name__ == '__main__':
+#     # do something
+#     dl = DataLoader('gps.csv')
+#     dict = dl.get_gps_dictionary()
+#     range = dl.get_gps_range()
+#     print(range)
