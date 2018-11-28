@@ -5,10 +5,11 @@ import os
 import sys
 sys.path.append('..')
 
-from tools.read_gps import read_gps
+# from tools.read_gps import read_gps
 from tools.read_hokuyo_30m import read_hokuyo
 from tools.tar_extract import tar_extract
 from tools.download_tar import download_tar
+from tools.data_loader import DataLoader
 
 class DataManager:
 
@@ -27,7 +28,9 @@ class DataManager:
         # Loads a list of ordered (x,y) tuples into the 'gps' key of the data dictionary
         os.chdir(self.owd)
         gps_file_path = os.path.join(self.data_dir, os.path.join(self.date, 'gps.csv'))
-        self.data_dict['gps'] = read_gps(gps_file_path)
+        data_loader = DataLoader(gps_file_path)
+        self.data_dict['gps'] = data_loader.get_gps_dictionary()
+        self.data_dict['gps_range'] = data_loader.get_gps_range()
 
     def load_lidar(self, num_samples):
         os.chdir(self.owd)
