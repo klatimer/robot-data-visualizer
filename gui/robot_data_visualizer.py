@@ -1,8 +1,18 @@
 """
 This file is the main viewing window of the application.
 """
+"""
 import matplotlib
 matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+from matplotlib.backend_bases import key_press_handler
+"""
+import matplotlib
+matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib.backend_bases import key_press_handler
@@ -29,18 +39,26 @@ class VisualizerFrame(tk.Frame):
         self.label = tk.Label(self, text="Viewer")
         self.label.pack(side=tk.TOP)
 
-        f = Figure(figsize=(5, 4), dpi=100)
+        self.fig = Figure(figsize=(5, 4), dpi=100)
+        self.a = self.fig.add_subplot(111)
+        """
         a = f.add_subplot(111)
         t = arange(0.0, 3.0, 0.01)
         s = sin(2 * pi * t)
-
         a.plot(t, s)
+        """
 
         # a tk.DrawingArea
-        self.canvas = FigureCanvasTkAgg(f, master=self.master)
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         self.canvas.mpl_connect('key_press_event', self.on_key_event)
+
+    def load_map(self):
+        print('Loading map ...')
+        im = mpimg.imread('../data/2013-01-10/umich.png')
+        self.a.imshow(im)
+        self.canvas.draw()
 
     def on_key_event(self, event):
         print('you pressed %s' % event.key)
@@ -112,11 +130,14 @@ class ControlFrame(tk.Frame):
             self.parent = parent
             self.widgets()
 
+        def load_map(self):
+            self.parent.parent.window.load_map()
+
         def widgets(self):
             label = tk.Label(self, text="Map Control", bg="blue", fg="white")
             label.pack(fill=tk.X)
 
-            on_button = tk.Button(self, text="On", bg="green", fg="white")
+            on_button = tk.Button(self, text="On", bg="green", fg="white", command=self.load_map)
             on_button.pack(side=tk.LEFT)
 
             off_button = tk.Button(self, text="Off", bg="red", fg="white")
