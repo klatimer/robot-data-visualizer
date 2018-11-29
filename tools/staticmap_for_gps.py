@@ -23,20 +23,35 @@ def generate_coordinate():
 
     return (coordinates, dm.data_dir)
 
+def divide_coordinates(coordinates):
+    interval = len(coordinates) // 50 + 1
+    divided_coordinates = []
+    for i in range(0, len(coordinates), interval):
+        divided_coordinates.append(coordinates[i: i + interval])
+    return divided_coordinates
+
 def map_for_gps():
+
     m = StaticMap(1000, 1000, 80)
 
     (coordinates, data_dir) = generate_coordinate()
-
-    line = Line(coordinates, '#D2322D', 4)
-
-    m.add_line(line)
-
-    image = m.render()
     # Put image in the corresponding data directory
     os.chdir(data_dir)
-    image.save('umich.png')
 
+    line = Line(coordinates, 'white', 1)
+    m.add_line(line)
+
+    divided_coordinates = divide_coordinates(coordinates)
+    length = len(divided_coordinates)
+    for i in range(length):
+        temp_line = Line(divided_coordinates[i], 'red', 4)
+        m.add_line(temp_line)
+        print('Total : ' + str(length)  + '  So far :' + str(i))
+        if i != 0:
+            prev_line = Line([divided_coordinates[i - 1][-1], divided_coordinates[i][0]], 'red', 4)
+            m.add_line(prev_line)
+        image = m.render()
+        image.save('umich' + str(i) + '.png')
 
 if __name__ == '__main__':
     map_for_gps()
