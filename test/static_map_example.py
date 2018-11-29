@@ -1,7 +1,4 @@
-# install using "pip install staticmap"
-
-from staticmap import StaticMap, Line
-from PIL import Image
+from static_map import StaticMap, Line
 
 m = StaticMap(600, 600, 80)
 
@@ -15,7 +12,5 @@ line = Line(coordinates, '#D2322D', 4)
 m.add_line(line_outline)
 m.add_line(line)
 
-# image = m.render()
-base_image = Image.new('RGB', (m.width, m.height), m.background_color)
-image = m._draw_base_layer(base_image)
+image = m.render()
 image.save('northseattle.png')
