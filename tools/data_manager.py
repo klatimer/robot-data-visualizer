@@ -16,7 +16,7 @@ from tools.data_loader import DataLoader
 class DataManager:
 
     def __init__(self):
-        self.owd, _ = os.path.split(os.path.dirname(os.path.abspath(__file__)))
+        self.owd = os.getcwd()
         self.data_dir_name = 'data'
         self.base_name = 'http://robots.engin.umich.edu/nclt'
         self.date = '2013-01-10'
