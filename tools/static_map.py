@@ -69,7 +69,5 @@ def render_without_features(self, zoom=None, center=None):
 
     return image
 
-# Register the new method in the orignal class
-# StaticMap.__dict__["render"] = render_without_features
-# setattr(StaticMap, "render", "render_without_features")
+# Register the new method in the original class
 StaticMap.render = render_without_features

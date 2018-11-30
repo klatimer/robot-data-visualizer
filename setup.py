@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 from os import path
 
 setup(
-	name = "robotvisualization",
+	name = "robot-data-visualizer",
 
 	version = "1.0.0",
 
