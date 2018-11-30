@@ -15,11 +15,11 @@ from tools.data_loader import DataLoader
 
 class DataManager:
 
-    def __init__(self):
+    def __init__(self, date):
         self.owd = os.getcwd()
         self.data_dir_name = 'data'
         self.base_name = 'http://robots.engin.umich.edu/nclt'
-        self.date = '2013-01-10'
+        self.date = date
         self.data_dir = os.path.join(self.owd, os.path.join(self.data_dir_name, self.date))
         self.data_dict = {}
 

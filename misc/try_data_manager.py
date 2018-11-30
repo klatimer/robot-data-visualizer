@@ -3,12 +3,14 @@
 import sys
 sys.path.append('..')
 
-import tools.data_manager as td
+import traceback
+from tools.data_manager import DataManager
 
 
 def main():
     try:
-        dm = td.DataManager()
+        # Initialize with desired date from the UMich dataset
+        dm = DataManager('2013-01-10')
         # Download and extract sensor data
         dm.setup_data_files('sensor_data')
         # Download and extract data for the hokuyo lidar scanner
@@ -18,8 +20,9 @@ def main():
         # load first 100 scans of lidar
         dm.load_lidar(100)
         print('Successful load of data')
-    except:
-        print('Data manager failure')
+    except Exception as ex:
+        print(ex)
+        traceback.print_exc()
 
 if __name__ == '__main__':
     main()
