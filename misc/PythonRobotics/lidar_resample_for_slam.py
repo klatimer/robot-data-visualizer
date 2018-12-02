@@ -61,12 +61,10 @@ def read_hokuyo(filename, max_samples=1000000):
 
 if __name__ == '__main__':
     data = read_hokuyo('../data/2013-01-10/hokuyo_30m.bin', 100)
-    x,y,time = data[0]
-    sample_rate = 10 # the number of points skipped between subsamples
-    downsample_x= (x[::sample_rate])
-    length_downsample= len(downsample_x)
+    x, y, time = data[0]
+    sample_rate = 10  # the number of points skipped between subsamples
+    downsample_x = (x[::sample_rate])
+    length_downsample = len(downsample_x)
     print(downsample_x)
-    #for i in range (0,1,length_downsample):
-
-
+    # for i in range (0,1,length_downsample):
 
