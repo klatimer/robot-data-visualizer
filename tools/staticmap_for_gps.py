@@ -5,6 +5,11 @@ import sys
 sys.path.append('..')
 import tools
 
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import numpy as np
+
+
 def generate_coordinate():
     dm = tools.data_manager.DataManager('2013-01-10')
     # Download and extract sensor data
@@ -70,6 +75,12 @@ def map_for_gps():
 
     points = m.extract_line_points()
     #print(points)
+    x_coords = [item[0] for item in points]
+    y_coords = [item[1] for item in points]
+
+    plt.imshow(image)
+    plt.plot(x_coords, y_coords)
+    plt.show() # block program until window is closed
 
     return points
 
