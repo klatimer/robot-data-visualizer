@@ -1,4 +1,4 @@
-from staticmap import StaticMap, Line
+from staticmap_edited import StaticMap, Line
 import os
 import sys
 
