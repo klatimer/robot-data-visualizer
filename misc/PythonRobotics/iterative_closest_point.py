@@ -9,6 +9,11 @@ author: Atsushi Sakai (@Atsushi_twi)
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+sys.path.append('..')
+
+import traceback
+from tools.data_manager import DataManager
 
 #  ICP parameters
 EPS = 0.0001
@@ -131,16 +136,42 @@ def SVD_motion_estimation(ppoints, cpoints):
 
     return R, t
 
+def convert(x_s):
+
+    scaling = 0.005 # 5 mm
+    offset = -100.0
+
+    x = x_s * scaling + offset
+
+    return x
+
+def choose_lidar_pts(i, data):
+    data_i = data[i]
+    x,y,time = data_i
+    #print(x)
+    x_index = np.nonzero(x)
+    x_index_str = str(x_index)
+    #print(x_index)
+    y_index = np.nonzero(y)
+    #print(y_index)
+    y_index_str = str(y_index)
+    #print(y_index)
+    is_equal = x_index_str == y_index_str
+    more_than_100 = len(x) > 100
+    x = x[np.nonzero(x)]
+    if is_equal == True & more_than_100 == True:
+        return x, y, time
+
 
 def main():
     print(__file__ + " start!!")
 
     # simulation parameters
     '''TO DO: 
-    Find a subsampling routine
-    Define the number of points to subsample. (define nPoint)
-    Define the field length (based on data)
-    Ensure data is in cartesian coordinates and convert as needed
+    X  Find a subsampling routine
+    X  Define the number of points to subsample. (define nPoint)
+    (Skipping for now) Define the field length (based on data)
+    (looks good, still need to determine units) Ensure data is in cartesian coordinates and convert as needed
     set px equal to x coordinate subsample
     set py equal to y coordinate subsample
     develop motion equation from odometry data: define x (m), y (m) and yaw (deg)
@@ -151,26 +182,27 @@ def main():
 
 
     fieldLength = 50.0
-    motion = [0.5, 2.0, math.radians(-10.0)]  # movement [x[m],y[m],yaw[deg]]
+    #motion = [0.5, 2.0, math.radians(-10.0)]  # movement [x[m],y[m],yaw[deg]]
 
-    nsim = 3  # number of simulation
+    nsim = 10  # number of simulation
 
-    for _ in range(nsim):
+    for i in range(nsim):
 
         # previous points
-        px = (np.random.rand(nPoint) - 0.5) * fieldLength
-        py = (np.random.rand(nPoint) - 0.5) * fieldLength
+        px, py, time = choose_lidar_pts(i)
         ppoints = np.matrix(np.vstack((px, py)))
 
         # current points
-        cx = [math.cos(motion[2]) * x - math.sin(motion[2]) * y + motion[0]
-              for (x, y) in zip(px, py)]
-        cy = [math.sin(motion[2]) * x + math.cos(motion[2]) * y + motion[1]
-              for (x, y) in zip(px, py)]
+        cx, cy, time = choose_lidar_pts(i+1)
+
         cpoints = np.matrix(np.vstack((cx, cy)))
 
         R, T = ICP_matching(ppoints, cpoints)
 
 
 if __name__ == '__main__':
-    main()
+    dm = DataManager('2013-01-10')
+    dm.load_lidar(100)
+    lidar = dm.data_dict['lidar']
+    lidar_0 = lidar[1]
+    print(lidar_0)
