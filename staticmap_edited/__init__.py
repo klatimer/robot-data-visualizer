@@ -1,0 +1,1 @@
+from staticmap_edited.staticmap import StaticMap, CircleMarker, IconMarker, Line, Polygon
