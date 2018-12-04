@@ -188,7 +188,7 @@ def main():
     dm.setup_data_files('hokuyo')
 
     # load first 100 scans of lidar
-    num_samples = 1000000
+    num_samples = 1000
     print('hokuyo data loading...')
     dm.load_lidar(num_samples)
 
@@ -201,7 +201,7 @@ def main():
 
     nsim = 10  # number of simulation
 
-    for i in range(0,int(num_samples/100),100):
+    for i in range(0,int(num_samples/10),10):
         #get previous and current points
         k = i
         j = -1
