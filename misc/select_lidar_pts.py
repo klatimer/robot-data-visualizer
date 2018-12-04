@@ -1,4 +1,8 @@
-def choose_lidar_pts(data = read_hokuyo('../data/2013-01-10/hokuyo_30m.bin', num_samples = 100),i):
+import numpy as np
+from tools.read_hokuyo_30m import read_hokuyo
+
+
+def choose_lidar_pts(i, data = read_hokuyo('../data/2013-01-10/hokuyo_30m.bin', max_samples = 100)):
     data_i = data[i]
     x,y,time = data_i
     #print(x)
@@ -25,5 +29,3 @@ def choose_lidar_pts(data = read_hokuyo('../data/2013-01-10/hokuyo_30m.bin', num
             #print(i)
         #print(is_equal)
         #x_i = x[x_index]
-
-

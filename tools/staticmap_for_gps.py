@@ -1,23 +1,16 @@
-from staticmap_edited import StaticMap, Line
 import os
 import sys
+# sys.path.append('..')
 
-sys.path.append('..')
-import tools
+from staticmap import Line
+from tools.static_map_base_layer import StaticMapBaseLayer
+from tools.data_manager import DataManager
 
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import numpy as np
 
 
-def generate_coordinate():
-    dm = tools.data_manager.DataManager('2013-01-10')
-    # Download and extract sensor data
-    dm.setup_data_files('sensor_data')
-    # load gps
-    dm.load_gps()
-
-    gps_data = dm.data_dict['gps']
+def generate_coordinates(data_dict):
+    gps_data = data_dict['gps']
     gps_lat = gps_data['lat']
     gps_lng = gps_data['lng']
 
@@ -26,7 +19,7 @@ def generate_coordinate():
     for i in range(0, len(gps_lat), 50):
         coordinates.append([gps_lng[i], gps_lat[i]])
 
-    return (coordinates, dm.data_dir)
+    return coordinates
 
 def divide_coordinates(coordinates):
     interval = len(coordinates) // 50 + 1
@@ -36,12 +29,17 @@ def divide_coordinates(coordinates):
     return divided_coordinates
 
 def map_for_gps_gif():
+    dm = DataManager('2013-01-10')
+    # Download and extract sensor data
+    dm.setup_data_files('sensor_data')
+    # load gps
+    dm.load_gps()
 
-    m = StaticMap(1000, 1000, 80)
+    m = StaticMapBaseLayer(1000, 1000, 80)
 
-    (coordinates, data_dir) = generate_coordinate()
+    coordinates = generate_coordinates(dm.data_dict)
     # Put image in the corresponding data directory
-    os.chdir(data_dir)
+    os.chdir(dm.data_dir)
 
     line = Line(coordinates, 'red', 4)
     m.add_line(line)
@@ -60,27 +58,33 @@ def map_for_gps_gif():
 
 
 def map_for_gps():
+    dm = DataManager('2013-01-10')
+    # Download and extract sensor data
+    dm.setup_data_files('sensor_data')
+    # load gps
+    dm.load_gps()
 
-    m = StaticMap(1000, 1000, 80)
+    m = StaticMapBaseLayer(1000, 1000, 80)
 
-    (coordinates, data_dir) = generate_coordinate()
+    coordinates = generate_coordinates(dm.data_dict)
     # Put image in the corresponding data directory
-    os.chdir(data_dir)
+    os.chdir(dm.data_dir)
 
     line = Line(coordinates, 'red', 4)
     m.add_line(line)
 
-    image = m.render()
+    image = m.render_without_features()
     image.save('umich_empty.png')
 
     points = m.extract_line_points()
-    #print(points)
     x_coords = [item[0] for item in points]
     y_coords = [item[1] for item in points]
 
     plt.imshow(image)
     plt.plot(x_coords, y_coords)
-    plt.show() # block program until window is closed
+    plt.show(block=True) # block program until window is closed
+
+    os.chdir(dm.owd)
 
     return points
 
