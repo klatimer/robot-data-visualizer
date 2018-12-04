@@ -44,7 +44,7 @@ def ICP_matching(ppoints, cpoints,time):
 
     while dError >= EPS:
         count += 1
-
+        '''
         if show_animation:
             plt.cla()
             plt.plot(ppoints[0, :], ppoints[1, :], ".r")
@@ -53,7 +53,7 @@ def ICP_matching(ppoints, cpoints,time):
             plt.axis("equal")
             plt.title(time)
             plt.pause(0.1)
-
+        '''
         inds, error = nearest_neighbor_assosiation(ppoints, cpoints)
         Rt, Tt = SVD_motion_estimation(ppoints[:, inds], cpoints)
 
@@ -193,14 +193,7 @@ def main():
     dm.load_lidar(num_samples)
 
     lidar = dm.data_dict['lidar']
-    nPoint = 100
-
-
-    fieldLength = 40
-    #motion = [0.5, 2.0, math.radians(-10.0)]  # movement [x[m],y[m],yaw[deg]]
-
-    nsim = 10  # number of simulation
-
+    print('running SLAM')
     for i in range(0,int(num_samples/10),10):
         #get previous and current points
         k = i
@@ -233,7 +226,48 @@ def main():
 
 
         R, T = ICP_matching(ppoints, cpoints,time2)
+        #print('R =', R)
+        #print('T =', T)
 
+        if i == 0:
+            pose_xy = np.array([[0],[0]])
+            pose_uv = np.array([[0],[1]])
+            '''
+            X = 0
+            Y = 0
+            THETA = 0
+            U = np.cos(THETA)
+            V = np.sin(THETA)
+            '''
+        else:
+            print('U =', U)
+            print('V = ', V)
+            pose_xy = np.array([X, Y])
+            pose_uv = np.array([U, V])
+            print ('pose_uv =', np.array([[U],[V]]))
+            print('pose_xy', pose_xy)
+            print('pose_uv', pose_uv)
+        new_pose_xy= pose_xy + np.array(T)
+        a = np.array(R)
+        new_pose_uv= a.dot(pose_uv)
+        X = new_pose_xy[0]
+        Y = new_pose_xy[1]
+        U = new_pose_uv[0]
+        V = new_pose_uv[1]
+
+        print('T =', np.array(T))
+        print('pose_uv =', pose_uv)
+        print('new_pose_xy =', new_pose_xy)
+        print('X =', X)
+        print('Y =', Y)
+        print('U =', U)
+        print('V =', V)
+
+        plt.quiver(X, Y, U, V)
+        plt.axis("equal")
+        plt.title(time)
+        plt.pause(0.1)
+        plt.cla()
 
 if __name__ == '__main__':
     main()
