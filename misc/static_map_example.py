@@ -1,4 +1,5 @@
-from static_map import StaticMap, Line
+from staticmap import Line
+from tools.static_map_base_layer import StaticMap
 
 m = StaticMap(600, 600, 80)
 

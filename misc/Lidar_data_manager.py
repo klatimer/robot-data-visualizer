@@ -3,7 +3,7 @@
 import sys
 sys.path.append('..')
 
-import traceback
+import numpy as np
 from tools.data_manager import DataManager
 
         # Initialize with desired date from the UMich dataset

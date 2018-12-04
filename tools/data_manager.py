@@ -7,10 +7,10 @@ import os
 # __all__=['DataManager']
 # from tools import *
 
+from tools.data_loader import DataLoader
 from tools.read_hokuyo_30m import read_hokuyo
 from tools.tar_extract import tar_extract
 from tools.download_tar import download_tar
-from tools.data_loader import DataLoader
 
 
 class DataManager:
@@ -33,6 +33,7 @@ class DataManager:
         gps_file_path = os.path.join(self.data_dir_name, os.path.join(self.date, 'gps.csv'))
         data_loader = DataLoader(gps_file_path)
         self.data_dict['gps'] = data_loader.get_gps_dictionary()
+        self.data_dict['gps_range'] = data_loader.get_gps_range()
 
     def load_lidar(self, num_samples):
         os.chdir(self.owd)
