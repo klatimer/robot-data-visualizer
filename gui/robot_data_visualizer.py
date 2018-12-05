@@ -45,14 +45,13 @@ class VisualizerFrame(tk.Frame):
 
     def callback_initialize_data_manager(self):
         if self.data_manager is None:
-            self.parent.set_status('DM_START')
+            self.parent.set_status('DM_START', hold=True)
             self.data_manager = DataManager('2013-01-10')
             self.data_manager.setup_data_files('sensor_data')
             self.data_manager.load_gps()
         else:
             pass
         self.parent.set_status('DM_END')
-        self.parent.after(self.parent.STATUS_DELAY, lambda: self.parent.set_status('READY'))
 
     def load_map(self):
         print('Loading map ...')
@@ -168,8 +167,9 @@ class MainWindow(tk.Tk):
         tk.Tk.__init__(self, parent)
         self.parent = parent
         self.status_text = dict(READY="Ready",
-                                DM_START="Data Manager Initializing ...",
-                                DM_END="Data Manager loaded data")
+                                DM_START="Initializing ...",
+                                DM_END="Data is ready",
+                                DM_NOT_READY="Data not loaded")
         self.STATUS_DELAY = 3000 # (ms) delay between status changes
         self.title("Robot Data Visualizer")
         self.mainWidgets()
@@ -196,9 +196,11 @@ class MainWindow(tk.Tk):
         self.toolbar.bind_widgets()
 
 
-    def set_status(self, status):
+    def set_status(self, status, hold=False):
         if status in self.status_text.keys():
             self.status.config(text=self.status_text[status])
+            if not hold:
+                self.status.after(self.STATUS_DELAY, lambda: self.status.config(text=self.status_text['READY']))
         else:
             self.status.config(text=self.status_text['READY'])
 
