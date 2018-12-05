@@ -4,7 +4,6 @@ import sys
 
 from staticmap import Line
 from tools.static_map_base_layer import StaticMapBaseLayer
-from tools.data_manager import DataManager
 
 import matplotlib.pyplot as plt
 
@@ -57,36 +56,30 @@ def map_for_gps_gif():
         image.save('umich' + str(i) + '.png')
 
 
-def map_for_gps():
-    dm = DataManager('2013-01-10')
-    # Download and extract sensor data
-    dm.setup_data_files('sensor_data')
-    # load gps
-    dm.load_gps()
-
+def map_for_gps(data_dict, data_dir):
     m = StaticMapBaseLayer(1000, 1000, 80)
 
-    coordinates = generate_coordinates(dm.data_dict)
+    coordinates = generate_coordinates(data_dict)
     # Put image in the corresponding data directory
-    os.chdir(dm.data_dir)
+    os.chdir(data_dir)
 
     line = Line(coordinates, 'red', 4)
     m.add_line(line)
 
     image = m.render_without_features()
-    image.save('umich_empty.png')
+    image.save('map.png')
 
     points = m.extract_line_points()
     x_coords = [item[0] for item in points]
     y_coords = [item[1] for item in points]
 
-    plt.imshow(image)
-    plt.plot(x_coords, y_coords)
-    plt.show(block=True) # block program until window is closed
-
-    os.chdir(dm.owd)
-
-    return points
+    return x_coords, y_coords
 
 if __name__ == '__main__':
-    map_for_gps()
+    from tools.data_manager import DataManager
+    dm = DataManager('2013-01-10')
+    # Download and extract sensor data
+    dm.setup_data_files('sensor_data')
+    # load gps
+    dm.load_gps()
+    map_for_gps(dm.data_dict, dm.data_dir)

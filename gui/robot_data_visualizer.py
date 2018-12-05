@@ -1,6 +1,7 @@
 """
 This file is the main viewing window of the application.
 """
+import os
 import sys
 sys.path.append('..')
 
@@ -14,6 +15,7 @@ from matplotlib.backend_bases import key_press_handler
 
 import tkinter as tk
 
+from tools.staticmap_for_gps import map_for_gps
 from tools.data_manager import DataManager
 
 
@@ -54,8 +56,11 @@ class VisualizerFrame(tk.Frame):
         self.parent.set_status('DM_END')
 
     def load_map(self):
-        print('Loading map ...')
-        im = mpimg.imread('../data/2013-01-10/umich.png')
+        # Generate map and save in the correct data directory
+        data_dir = self.data_manager.data_dir
+        data_dict = self.data_manager.data_dict
+        map_for_gps(data_dict, data_dir)
+        im = mpimg.imread(os.path.join(data_dir, 'map.png'))
         self.a.imshow(im)
         self.canvas.draw()
 
