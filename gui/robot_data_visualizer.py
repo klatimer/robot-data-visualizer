@@ -95,15 +95,17 @@ class ControlFrame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, width=400)
         self.parent = parent
+        self.root = parent
         self.slam_control = None
         self.map_control = None
         self.widgets()
 
     class SlamControlFrame(tk.Frame):
 
-        def __init__(self, parent):
+        def __init__(self, parent, root):
             tk.Frame.__init__(self, parent, width=400)
             self.parent = parent
+            self.root = root
             self.widgets()
 
         def widgets(self):
@@ -125,13 +127,14 @@ class ControlFrame(tk.Frame):
 
     class MapControlFrame(tk.Frame):
 
-        def __init__(self, parent):
+        def __init__(self, parent, root):
             tk.Frame.__init__(self, parent, width=400)
             self.parent = parent
+            self.root = root
             self.widgets()
 
         def load_map(self):
-            self.parent.parent.window.load_map()
+            self.root.window.load_map()
 
         def widgets(self):
             label = tk.Label(self, text="Map Control", bg="blue", fg="white")
@@ -144,9 +147,9 @@ class ControlFrame(tk.Frame):
             off_button.pack(side=tk.RIGHT)
 
     def widgets(self):
-        self.slam_control = self.SlamControlFrame(self)
+        self.slam_control = self.SlamControlFrame(self, self.root)
         self.slam_control.pack(fill=tk.X)
-        self.map_control = self.MapControlFrame(self)
+        self.map_control = self.MapControlFrame(self, self.root)
         self.map_control.pack(fill=tk.X)
 
 
