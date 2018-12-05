@@ -1,14 +1,9 @@
 """
 This file is the main viewing window of the application.
 """
-"""
-import matplotlib
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
-from matplotlib.backend_bases import key_press_handler
-"""
+import sys
+sys.path.append('..')
+
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
@@ -17,9 +12,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib.backend_bases import key_press_handler
 
-from numpy import arange, sin, pi
-
 import tkinter as tk
+
+from tools.data_manager import DataManager
 
 
 class VisualizerFrame(tk.Frame):
@@ -32,6 +27,7 @@ class VisualizerFrame(tk.Frame):
         self.parent = parent
         self.label = None
         self.canvas = None
+        self.data_manager = None
         self.widgets()
 
     def widgets(self):
@@ -41,18 +37,22 @@ class VisualizerFrame(tk.Frame):
 
         self.fig = Figure(figsize=(5, 4), dpi=100)
         self.a = self.fig.add_subplot(111)
-        """
-        a = f.add_subplot(111)
-        t = arange(0.0, 3.0, 0.01)
-        s = sin(2 * pi * t)
-        a.plot(t, s)
-        """
 
-        # a tk.DrawingArea
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         self.canvas.mpl_connect('key_press_event', self.on_key_event)
+
+    def callback_initialize_data_manager(self):
+        if self.data_manager is None:
+            self.parent.set_status('DM_START')
+            self.data_manager = DataManager('2013-01-10')
+            self.data_manager.setup_data_files('sensor_data')
+            self.data_manager.load_gps()
+        else:
+            pass
+        self.parent.set_status('DM_END')
+        self.parent.after(self.parent.STATUS_DELAY, lambda: self.parent.set_status('READY'))
 
     def load_map(self):
         print('Loading map ...')
@@ -73,14 +73,18 @@ class ToolbarFrame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
+        self.insert_button = None
         self.widgets()
 
     def widgets(self):
-        insert_button = tk.Button(self, text="Insert Image", command=self.do_nothing)
-        insert_button.pack(side=tk.LEFT, padx=2, pady=2)
+        self.insert_button = tk.Button(self, text="Load Data")
+        self.insert_button.pack(side=tk.LEFT, padx=2, pady=2)
 
         print_button = tk.Button(self, text="Print", command=self.do_nothing)
         print_button.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def bind_widgets(self):
+        self.insert_button.config(command=self.parent.window.callback_initialize_data_manager)
 
     def do_nothing(self):
         print("Ok, ok, I won't ...")
@@ -166,6 +170,7 @@ class MainWindow(tk.Tk):
         self.status_text = dict(READY="Ready",
                                 DM_START="Data Manager Initializing ...",
                                 DM_END="Data Manager loaded data")
+        self.STATUS_DELAY = 3000 # (ms) delay between status changes
         self.title("Robot Data Visualizer")
         self.mainWidgets()
 
@@ -187,10 +192,13 @@ class MainWindow(tk.Tk):
         self.window = VisualizerFrame(self)
         self.window.pack(side=tk.LEFT, padx=2, pady=2)
 
+        # Bind widgets to their callback functions
+        self.toolbar.bind_widgets()
+
 
     def set_status(self, status):
         if status in self.status_text.keys():
-            self.status.config(text=status)
+            self.status.config(text=self.status_text[status])
         else:
             self.status.config(text=self.status_text['READY'])
 
