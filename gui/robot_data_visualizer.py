@@ -7,7 +7,6 @@ sys.path.append('..')
 
 import matplotlib
 matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -57,12 +56,14 @@ class VisualizerFrame(tk.Frame):
 
     def load_map(self):
         # Generate map and save in the correct data directory
+        self.parent.set_status('MAP_START', hold=True)
         data_dir = self.data_manager.data_dir
         data_dict = self.data_manager.data_dict
         map_for_gps(data_dict, data_dir)
         im = mpimg.imread(os.path.join(data_dir, 'map.png'))
         self.a.imshow(im)
         self.canvas.draw()
+        self.parent.set_status('MAP_END')
 
     def on_key_event(self, event):
         print('you pressed %s' % event.key)
@@ -174,8 +175,10 @@ class MainWindow(tk.Tk):
         self.status_text = dict(READY="Ready",
                                 DM_START="Initializing ...",
                                 DM_END="Data is ready",
-                                DM_NOT_READY="Data not loaded")
-        self.STATUS_DELAY = 3000 # (ms) delay between status changes
+                                DM_NOT_READY="Data not loaded",
+                                MAP_START="Map loading ...",
+                                MAP_END="Map is ready")
+        self.STATUS_DELAY = 2000 # (ms) delay between status changes
         self.title("Robot Data Visualizer")
         self.mainWidgets()
 
