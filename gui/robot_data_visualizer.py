@@ -160,8 +160,12 @@ class MainWindow(tk.Tk):
     def __init__(self, parent):
         tk.Tk.__init__(self, parent)
         self.parent = parent
+        self.status_text = dict(READY="Ready",
+                                DM_START="Data Manager Initializing ...",
+                                DM_END="Data Manager loaded data")
         self.title("Robot Data Visualizer")
         self.mainWidgets()
+
 
     def mainWidgets(self):
         # Toolbar
@@ -169,7 +173,7 @@ class MainWindow(tk.Tk):
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
 
         # Status bar
-        self.status = tk.Label(self, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status = tk.Label(self, text=self.status_text['READY'], bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Controls - SLAM and Map
@@ -179,6 +183,13 @@ class MainWindow(tk.Tk):
         # Main viewing window
         self.window = VisualizerFrame(self)
         self.window.pack(side=tk.LEFT, padx=2, pady=2)
+
+
+    def set_status(self, status):
+        if status in self.status_text.keys():
+            self.status.config(text=status)
+        else:
+            self.status.config(text=self.status_text['READY'])
 
 
 if __name__ == '__main__':
