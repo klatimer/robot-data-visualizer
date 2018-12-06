@@ -5,8 +5,12 @@ import os
 import sys
 sys.path.append('..')
 
+import warnings
+warnings.filterwarnings("ignore")
+
 import matplotlib
 matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -27,8 +31,13 @@ class VisualizerFrame(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.label = None
+        self.ax_map = None
+        self.ax_gps = None
+        self.map_plot = None
+        self.gps_plot = None
         self.canvas = None
         self.data_manager = None
+        self.gps_data = None
         self.widgets()
 
     def widgets(self):
@@ -37,7 +46,8 @@ class VisualizerFrame(tk.Frame):
         self.label.pack(side=tk.TOP)
 
         self.fig = Figure(figsize=(5, 4), dpi=100)
-        self.a = self.fig.add_subplot(111)
+        self.ax_map = self.fig.add_subplot(111)
+        self.ax_gps = self.fig.add_subplot(111)
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
         self.canvas.draw()
@@ -50,20 +60,50 @@ class VisualizerFrame(tk.Frame):
             self.data_manager = DataManager('2013-01-10')
             self.data_manager.setup_data_files('sensor_data')
             self.data_manager.load_gps()
+            x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
+            self.gps_data = [x_coords, y_coords]
         else:
             pass
-        self.parent.set_status('DM_END')
+        self.parent.set_status('DM_READY')
 
-    def load_map(self):
+    def callback_gps_on(self):
+        self.parent.set_status('GPS_START')
+        idx = self.get_idx_for_gps_update()
+        self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
+        self.canvas.show()
+        self.parent.set_status('GPS_READY')
+
+    def callback_gps_off(self):
+        self.update_gps(0)
+        self.parent.set_status('GPS_REMOVE')
+
+    def callback_gps_slider_changed(self, event):
+        self.update_gps(self.get_idx_for_gps_update())
+        self.parent.set_status('GPS_UPDATE')
+
+    def update_gps(self, idx):
+        if self.gps_data is not None:
+            self.gps_plot.set_xdata(self.gps_data[0][:idx])
+            self.gps_plot.set_ydata(self.gps_data[1][:idx])
+            self.canvas.draw()
+        else:
+            pass
+
+    def get_idx_for_gps_update(self):
+        slider_val = self.parent.control.gps_control.selection_scale.get()
+        idx_ratio = len(self.gps_data[0]) / 100
+        return int(slider_val * idx_ratio)
+
+    def callback_map_on(self):
         # Generate map and save in the correct data directory
-        self.parent.set_status('MAP_START', hold=True)
-        data_dir = self.data_manager.data_dir
-        data_dict = self.data_manager.data_dict
-        map_for_gps(data_dict, data_dir)
-        im = mpimg.imread(os.path.join(data_dir, 'map.png'))
-        self.a.imshow(im)
+        map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
+        im = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
+        self.ax_map.imshow(im)
         self.canvas.draw()
-        self.parent.set_status('MAP_END')
+        self.parent.set_status('MAP_READY')
+
+    def callback_map_off(self):
+        self.ax_map.remove()
 
     def on_key_event(self, event):
         print('you pressed %s' % event.key)
@@ -85,14 +125,11 @@ class ToolbarFrame(tk.Frame):
         self.insert_button = tk.Button(self, text="Load Data")
         self.insert_button.pack(side=tk.LEFT, padx=2, pady=2)
 
-        print_button = tk.Button(self, text="Print", command=self.do_nothing)
-        print_button.pack(side=tk.LEFT, padx=2, pady=2)
+        #print_button = tk.Button(self, text="Print")
+        #print_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     def bind_widgets(self):
         self.insert_button.config(command=self.parent.window.callback_initialize_data_manager)
-
-    def do_nothing(self):
-        print("Ok, ok, I won't ...")
 
 
 class ControlFrame(tk.Frame):
@@ -109,29 +146,36 @@ class ControlFrame(tk.Frame):
         self.map_control = None
         self.widgets()
 
-    class SlamControlFrame(tk.Frame):
+    class GpsControlFrame(tk.Frame):
 
         def __init__(self, parent, root):
             tk.Frame.__init__(self, parent, width=400)
             self.parent = parent
             self.root = root
+            self.selection_scale = None
+            self.scale_val = None
+            self.on_button = None
+            self.off_button = None
             self.widgets()
 
         def widgets(self):
-            label = tk.Label(self, text="SLAM Control", bg="blue", fg="white")
+            label = tk.Label(self, text="GPS Control", bg="blue", fg="white")
             label.pack(side=tk.TOP, fill=tk.X)
 
-            speed_scale = tk.Scale(self, orient=tk.HORIZONTAL)
-            speed_scale.pack(side=tk.TOP)
+            self.selection_scale = tk.Scale(self, orient=tk.HORIZONTAL, to=100, variable=self.scale_val)
+            self.selection_scale.set(100)
+            self.selection_scale.pack(side=tk.TOP)
 
-            show_its_button = tk.Checkbutton(self, text="show iterations")
-            show_its_button.pack(side=tk.TOP)
+            self.on_button = tk.Button(self, text="On", bg="green", fg="white")
+            self.on_button.pack(side=tk.LEFT)
 
-            run_button = tk.Button(self, text="Run", bg="green", fg="white")
-            run_button.pack(side=tk.LEFT)
+            self.off_button = tk.Button(self, text="Off", bg="red", fg="white")
+            self.off_button.pack(side=tk.RIGHT)
 
-            stop_button = tk.Button(self, text="Stop", bg="red", fg="white")
-            stop_button.pack(side=tk.RIGHT)
+        def bind_widgets(self):
+            self.on_button.config(command=self.root.window.callback_gps_on)
+            self.off_button.config(command=self.root.window.callback_gps_off)
+            self.selection_scale.bind("<ButtonRelease-1>", self.root.window.callback_gps_slider_changed)
 
 
     class MapControlFrame(tk.Frame):
@@ -140,26 +184,33 @@ class ControlFrame(tk.Frame):
             tk.Frame.__init__(self, parent, width=400)
             self.parent = parent
             self.root = root
+            self.on_button = None
+            self.off_button = None
             self.widgets()
-
-        def load_map(self):
-            self.root.window.load_map()
 
         def widgets(self):
             label = tk.Label(self, text="Map Control", bg="blue", fg="white")
             label.pack(fill=tk.X)
 
-            on_button = tk.Button(self, text="On", bg="green", fg="white", command=self.load_map)
-            on_button.pack(side=tk.LEFT)
+            self.on_button = tk.Button(self, text="On", bg="green", fg="white")
+            self.on_button.pack(side=tk.LEFT)
 
-            off_button = tk.Button(self, text="Off", bg="red", fg="white")
-            off_button.pack(side=tk.RIGHT)
+            self.off_button = tk.Button(self, text="Off", bg="red", fg="white")
+            self.off_button.pack(side=tk.RIGHT)
+
+        def bind_widgets(self):
+            self.on_button.config(command=self.root.window.callback_map_on)
+            self.off_button.config(command=self.root.window.callback_map_off)
 
     def widgets(self):
-        self.slam_control = self.SlamControlFrame(self, self.root)
-        self.slam_control.pack(fill=tk.X)
+        self.gps_control = self.GpsControlFrame(self, self.root)
+        self.gps_control.pack(fill=tk.X)
         self.map_control = self.MapControlFrame(self, self.root)
         self.map_control.pack(fill=tk.X)
+
+    def bind_widgets(self):
+        self.gps_control.bind_widgets()
+        self.map_control.bind_widgets()
 
 
 class MainWindow(tk.Tk):
@@ -173,11 +224,16 @@ class MainWindow(tk.Tk):
         tk.Tk.__init__(self, parent)
         self.parent = parent
         self.status_text = dict(READY="Ready",
-                                DM_START="Initializing ...",
-                                DM_END="Data is ready",
+                                DM_START="Initializing data manager ...",
+                                DM_READY="Data is ready",
                                 DM_NOT_READY="Data not loaded",
+                                GPS_START="GPS loading ...",
+                                GPS_READY="GPS is ready",
+                                GPS_REMOVE="GPS removed",
+                                GPS_UPDATE="GPS updated",
                                 MAP_START="Map loading ...",
-                                MAP_END="Map is ready")
+                                MAP_READY="Map is ready",
+                                MAP_REMOVE="Map removed")
         self.STATUS_DELAY = 2000 # (ms) delay between status changes
         self.title("Robot Data Visualizer")
         self.mainWidgets()
@@ -202,6 +258,7 @@ class MainWindow(tk.Tk):
 
         # Bind widgets to their callback functions
         self.toolbar.bind_widgets()
+        self.control.bind_widgets()
 
 
     def set_status(self, status, hold=False):
@@ -210,7 +267,7 @@ class MainWindow(tk.Tk):
             if not hold:
                 self.status.after(self.STATUS_DELAY, lambda: self.status.config(text=self.status_text['READY']))
         else:
-            self.status.config(text=self.status_text['READY'])
+            self.status.config(text=str(status))
 
 
 if __name__ == '__main__':
