@@ -1,4 +1,4 @@
-name: robot
+name: robotvis
 channels:
   - defaults
 dependencies:
@@ -19,7 +19,7 @@ dependencies:
   - mkl=2018.0.3=1
   - mkl_fft=1.0.6=py37hb8a8100_0
   - mkl_random=1.0.1=py37h5d10147_1
-  - ncurses=6.1=h0a44026_0
+  - ncurses=6.1=h0a44026_1
   - numpy=1.15.4=py37h6a91979_0
   - numpy-base=1.15.4=py37h8a80b8c_0
   - openssl=1.1.1a=h1de35cc_0
@@ -40,14 +40,20 @@ dependencies:
   - xz=5.2.4=h1de35cc_4
   - zlib=1.2.11=h1de35cc_3
   - pip:
+    - chardet==3.0.4
     - cvxpy==1.0.10
     - dill==0.2.8.2
     - ecos==2.0.7.post1
     - fastcache==1.0.2
     - future==0.17.1
+    - idna==2.7
     - multiprocess==0.70.6.1
     - osqp==0.4.1
+    - pillow==5.3.0
+    - requests==2.20.1
     - scs==2.0.2
+    - staticmap==0.5.4
     - toolz==0.9.0
-prefix: /anaconda3/envs/robot
+    - urllib3==1.24.1
+prefix: /anaconda3/envs/robotvis
 
