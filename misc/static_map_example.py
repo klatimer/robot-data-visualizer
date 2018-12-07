@@ -1,3 +1,6 @@
+'''
+A smoke test to use staticmap to generate northseatte.png without line features.
+'''
 from staticmap import Line
 from tools.static_map_base_layer import StaticMap
 
