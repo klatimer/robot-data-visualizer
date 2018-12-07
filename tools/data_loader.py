@@ -3,6 +3,7 @@ This class is responsible for precessing data correctly corresponding to the use
 """
 import numpy as np
 # __all__=['DataLoader']
+DEGREE = 180
 
 class DataLoader:
     """
@@ -58,8 +59,8 @@ class DataLoader:
         # Store three coordinates into a dictionary
         # Transform radius to angle
         gps_dictionary = {}
-        gps_dictionary['lat'] = lat * 180 / np.pi
-        gps_dictionary['lng'] = lng * 180 / np.pi
+        gps_dictionary['lat'] = lat * DEGREE / np.pi
+        gps_dictionary['lng'] = lng * DEGREE / np.pi
         gps_dictionary['alt'] = alt
 
         return gps_dictionary
@@ -88,10 +89,3 @@ class DataLoader:
         alt_range = (min(alt), max(alt))
 
         return (lat_range, lng_range, alt_range)
-
-# if __name__ == '__main__':
-#     # do something
-#     dl = DataLoader('gps.csv')
-#     dict = dl.get_gps_dictionary()
-#     range = dl.get_gps_range()
-#     print(range)

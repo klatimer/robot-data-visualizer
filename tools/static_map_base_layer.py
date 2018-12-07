@@ -1,12 +1,21 @@
-# Modification to the original staticmaps API, which can be found at
-# https://github.com/komoot/staticmap/blob/master/staticmap/staticmap.py
+''' Modification to the original staticmaps API, which can be found at
+    https://github.com/komoot/staticmap/blob/master/staticmap/staticmap.py'''
 
+from math import sqrt, log, tan, pi, cos
 from staticmap import StaticMap
 from PIL import Image
-from math import sqrt, log, tan, pi, cos, ceil, floor, atan, sinh
+
+
+RECT = 90
+HALF_DEGREE = 180
+FULL_DEGREE = 360
 
 
 class StaticMapBaseLayer(StaticMap):
+    '''
+    This is a overide class inherited from StaticMap. We overide some functions there to
+    get something we want.
+    '''
 
     def __init__(self, width, height, padding):
         super().__init__(width, height, padding) # call constructor for inherited class
@@ -18,10 +27,10 @@ class StaticMapBaseLayer(StaticMap):
         :type zoom: int
         :rtype: float
         """
-        if not (-180 <= lon <= 180):
-            lon = (lon + 180) % 360 - 180
+        if not (-HALF_DEGREE <= lon <= HALF_DEGREE):
+            lon = (lon + HALF_DEGREE) % FULL_DEGREE - HALF_DEGREE
 
-        return ((lon + 180.) / 360) * pow(2, zoom)
+        return ((lon + HALF_DEGREE) / FULL_DEGREE) * pow(2, zoom)
 
 
     def _lat_to_y(self, lat, zoom):
@@ -31,10 +40,11 @@ class StaticMapBaseLayer(StaticMap):
         :type zoom: int
         :rtype: float
         """
-        if not (-90 <= lat <= 90):
-            lat = (lat + 90) % 180 - 90
+        if not (-RECT <= lat <= RECT):
+            lat = (lat + RECT) % HALF_DEGREE - RECT
 
-        return (1 - log(tan(lat * pi / 180) + 1 / cos(lat * pi / 180)) / pi) / 2 * pow(2, zoom)
+        return (1 - log(tan(lat * pi / HALF_DEGREE) + 1 / cos(lat * pi / HALF_DEGREE)) / pi) \
+               / 2 * pow(2, zoom)
 
 
     def _simplify(self, points, tolerance=11):
@@ -51,20 +61,25 @@ class StaticMapBaseLayer(StaticMap):
 
         new_coords = [points[0]]
 
-        for p in points[1:-1]:
+        for point in points[1:-1]:
             last = new_coords[-1]
 
-            dist = sqrt(pow(last[0] - p[0], 2) + pow(last[1] - p[1], 2))
+            dist = sqrt(pow(last[0] - point[0], 2) + pow(last[1] - point[1], 2))
             if dist > tolerance:
-                new_coords.append(p)
+                new_coords.append(point)
 
         new_coords.append(points[-1])
 
         return new_coords
 
 
-    # This method is not in the original API
+
     def extract_line_points(self):
+        '''
+        This method is not in the original API
+        This function extract line features.
+        :return: points((px, py),(),...)
+        '''
         for line in self.lines:
             points = [(
                 self._x_to_px(self._lon_to_x(coord[0], self.zoom)),
@@ -114,6 +129,3 @@ class StaticMapBaseLayer(StaticMap):
         # self._draw_features(image)
 
         return image
-
-# Register the new method in the original class
-# StaticMap.render = render_without_features
