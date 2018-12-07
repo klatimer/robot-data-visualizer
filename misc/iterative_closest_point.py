@@ -188,7 +188,7 @@ def main():
     dm.setup_data_files('hokuyo')
 
     # load first 100 scans of lidar
-    num_samples = 1000
+    num_samples = 10000
     print('hokuyo data loading...')
     dm.load_lidar(num_samples)
 
@@ -240,13 +240,10 @@ def main():
             V = np.sin(THETA)
             '''
         else:
-            print('U =', U)
-            print('V = ', V)
+
             pose_xy = np.array([X, Y])
             pose_uv = np.array([U, V])
-            print ('pose_uv =', np.array([[U],[V]]))
-            print('pose_xy', pose_xy)
-            print('pose_uv', pose_uv)
+
         new_pose_xy= pose_xy + np.array(T)
         a = np.array(R)
         new_pose_uv= a.dot(pose_uv)
@@ -254,14 +251,6 @@ def main():
         Y = new_pose_xy[1]
         U = new_pose_uv[0]
         V = new_pose_uv[1]
-
-        print('T =', np.array(T))
-        print('pose_uv =', pose_uv)
-        print('new_pose_xy =', new_pose_xy)
-        print('X =', X)
-        print('Y =', Y)
-        print('U =', U)
-        print('V =', V)
 
         plt.quiver(X, Y, U, V)
         plt.axis("equal")
