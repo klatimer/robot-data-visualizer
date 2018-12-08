@@ -18,6 +18,7 @@ from matplotlib.backend_bases import key_press_handler
 
 import tkinter as tk
 
+from tools.get_dates_umich import get_dates_umich
 from tools.staticmap_for_gps import map_for_gps
 from tools.data_manager import DataManager
 
@@ -52,18 +53,26 @@ class VisualizerFrame(tk.Frame):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-        self.canvas.mpl_connect('key_press_event', self.on_key_event)
 
     def callback_initialize_data_manager(self):
+        # only setup a new dataset if this is the first load or the date has changed
+        date = self.parent.toolbar.date.get()
         if self.data_manager is None:
-            self.parent.set_status('DM_START', hold=True)
-            self.data_manager = DataManager('2013-01-10')
-            self.data_manager.setup_data_files('sensor_data')
-            self.data_manager.load_gps()
-            x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
-            self.gps_data = [x_coords, y_coords]
+            self.setup_data(date)
         else:
-            pass
+            if self.data_manager.date is not date:
+                os.chdir('../..') # patch for now - add this to end of load_gps() / load_lidar() functions
+                self.setup_data(date)
+            else:
+                pass
+
+    def setup_data(self, date):
+        self.parent.set_status('DM_START', hold=True)
+        self.data_manager = DataManager(date)
+        self.data_manager.setup_data_files('sensor_data')
+        self.data_manager.load_gps()
+        x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
+        self.gps_data = [x_coords, y_coords]
         self.parent.set_status('DM_READY')
 
     def callback_gps_on(self):
@@ -105,9 +114,13 @@ class VisualizerFrame(tk.Frame):
     def callback_map_off(self):
         self.ax_map.remove()
 
-    def on_key_event(self, event):
-        print('you pressed %s' % event.key)
-        key_press_handler(event, self.canvas)
+    def callback_date_changed(self):
+        new_date = self.parent.toolbar.date.get() # Need to call get() because this is a StringVar object
+        if self.parent.toolbar.date is not new_date:
+            self.parent.toolbar.date.set(new_date)
+            # self.callback_initialize_data_manager(new_date)
+        else:
+            pass
 
 
 class ToolbarFrame(tk.Frame):
@@ -118,19 +131,29 @@ class ToolbarFrame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.insert_button = None
+        self.date = None
+        self.dates = get_dates_umich()
+        self.load_button = None
+        self.option_menu = None
         self.widgets()
 
     def widgets(self):
-        self.insert_button = tk.Button(self, text="Load Data")
-        self.insert_button.pack(side=tk.LEFT, padx=2, pady=2)
+        self.dates = get_dates_umich()
+        self.load_button = tk.Button(self, text="Load Data")
+        self.load_button.pack(side=tk.LEFT, padx=2, pady=2)
 
+        self.date = tk.StringVar(self)
+        self.date.set(self.dates[24])
+        self.option_menu = tk.OptionMenu(self, self.date, *self.dates, command=self.callback_date_changed)
+        self.option_menu.pack(side=tk.LEFT, padx=2, pady=2)
         #print_button = tk.Button(self, text="Print")
         #print_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     def bind_widgets(self):
-        self.insert_button.config(command=self.parent.window.callback_initialize_data_manager)
+        self.load_button.config(command=self.parent.window.callback_initialize_data_manager)
 
+    def callback_date_changed(self, event):
+        self.parent.window.callback_date_changed()
 
 class ControlFrame(tk.Frame):
     """

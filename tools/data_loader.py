@@ -2,6 +2,7 @@
 This class is responsible for precessing data correctly corresponding to the user's choice.
 """
 import numpy as np
+import os
 # __all__=['DataLoader']
 
 class DataLoader:
@@ -48,6 +49,7 @@ class DataLoader:
         """
         # path = self.choose_path()
         # os.chdir(path)
+        tmp = os.getcwd()
         file_name = self.chosen_data
         gps = np.loadtxt(file_name, delimiter=",")
 
