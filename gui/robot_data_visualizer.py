@@ -112,7 +112,8 @@ class VisualizerFrame(tk.Frame):
         self.parent.set_status('MAP_READY')
 
     def callback_map_off(self):
-        self.ax_map.remove()
+        self.ax_map.clear()
+        self.canvas.draw()
 
     def callback_date_changed(self):
         new_date = self.parent.toolbar.date.get() # Need to call get() because this is a StringVar object
