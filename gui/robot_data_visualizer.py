@@ -9,10 +9,12 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from datetime import datetime
+from PIL import ImageDraw
 
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
+import matplotlib.lines as lines
 import matplotlib.image as mpimg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -126,7 +128,7 @@ class VisualizerFrame(tk.Frame):
 
     def update_timestamp(self, idx):
         curr_tstamp = self.get_timestamp_for_gps_update(idx)
-        self.label.config(text=str('timestamp: ' + curr_tstamp))
+        self.label.config(text=str('time stamp: ' + curr_tstamp))
 
     def get_idx_for_gps_update(self):
         slider_val = self.parent.control.gps_control.selection_scale.get()
@@ -141,19 +143,26 @@ class VisualizerFrame(tk.Frame):
 
     def callback_map_on(self):
         # Generate map and save in the correct data directory
-        # map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
-        # im = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
         if not self.map_on:
             self.map_on = True
             if self.map_image is not None:
                 self.ax_map.imshow(self.map_image)
+                # draw scale on the map
+                map_scale = self.get_map_scale()
+                line = lines.Line2D([0, 200], [0, 0], linewidth=4, color='b')
+                self.ax_map.add_line(line)
+                distance = map_scale * 200
+                if distance > 1000:
+                    scale_str = "scale = " + str(float("%.2f" % (distance / 1000))) + " kilometers"
+                else:
+                    scale_str = "scale = " + str(float("%.2f" % (distance))) + " meters"
+                self.ax_map.text(0, -10, scale_str, fontsize=8)
                 self.canvas.draw()
                 self.parent.set_status('MAP_READY')
             else:
                 self.parent.set_status('MAP_ERROR')
         else:
             pass
-
 
     def callback_map_off(self):
         if self.map_on:
@@ -172,6 +181,14 @@ class VisualizerFrame(tk.Frame):
             self.parent.toolbar.date.set(new_date)
         else:
             pass
+
+    def get_map_scale(self):
+        k = 111000 # meters per degree of latitude (approx.)
+        lat_range = self.data_manager.data_dict['gps_range'][0]
+        d_lat_range = abs(lat_range[0] - lat_range[1])
+        d_x_pixels = abs(max(self.gps_data[0]) - min(self.gps_data[0]))
+        map_scale = d_lat_range * k / d_x_pixels
+        return map_scale # units of meters per pixel
 
 
 class ToolbarFrame(tk.Frame):
