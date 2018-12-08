@@ -36,9 +36,13 @@ class VisualizerFrame(tk.Frame):
         self.ax_gps = None
         self.map_plot = None
         self.gps_plot = None
+        self.gps_on = False
         self.canvas = None
         self.data_manager = None
         self.gps_data = None
+        self.gps_on = False
+        self.map_on = False
+        self.map_image = None
         self.widgets()
 
     def widgets(self):
@@ -67,24 +71,38 @@ class VisualizerFrame(tk.Frame):
                 pass
 
     def setup_data(self, date):
+        if self.data_manager is not None:
+            self.ax_map.clear()
+            self.canvas.draw()
+            self.gps_on = False
+            self.map_on = False
         self.parent.set_status('DM_START', hold=True)
         self.data_manager = DataManager(date)
         self.data_manager.setup_data_files('sensor_data')
         self.data_manager.load_gps()
         x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
         self.gps_data = [x_coords, y_coords]
+        self.map_image = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
         self.parent.set_status('DM_READY')
 
     def callback_gps_on(self):
-        self.parent.set_status('GPS_START')
-        idx = self.get_idx_for_gps_update()
-        self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
-        self.canvas.show()
-        self.parent.set_status('GPS_READY')
+        if not self.gps_on:
+            self.gps_on = True
+            self.parent.set_status('GPS_START')
+            idx = self.get_idx_for_gps_update()
+            self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
+            self.canvas.show()
+            self.parent.set_status('GPS_READY')
+        else:
+            pass
 
     def callback_gps_off(self):
-        self.update_gps(0)
-        self.parent.set_status('GPS_REMOVE')
+        if self.gps_on:
+            self.gps_on = False
+            self.update_gps(0)
+            self.parent.set_status('GPS_REMOVE')
+        else:
+            pass
 
     def callback_gps_slider_changed(self, event):
         self.update_gps(self.get_idx_for_gps_update())
@@ -105,15 +123,30 @@ class VisualizerFrame(tk.Frame):
 
     def callback_map_on(self):
         # Generate map and save in the correct data directory
-        map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
-        im = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
-        self.ax_map.imshow(im)
-        self.canvas.draw()
-        self.parent.set_status('MAP_READY')
+        # map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
+        # im = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
+        if not self.map_on:
+            self.map_on = True
+            if self.map_image is not None:
+                self.ax_map.imshow(self.map_image)
+                self.canvas.draw()
+                self.parent.set_status('MAP_READY')
+            else:
+                self.parent.set_status('MAP_ERROR')
+        else:
+            pass
+
 
     def callback_map_off(self):
-        self.ax_map.clear()
-        self.canvas.draw()
+        if self.map_on:
+            self.map_on = False
+            self.ax_map.clear()
+            if self.gps_on:
+                self.gps_on = False
+                self.callback_gps_on() # because the previous line clears both map and gps
+            self.canvas.draw()
+        else:
+            pass
 
     def callback_date_changed(self):
         new_date = self.parent.toolbar.date.get() # Need to call get() because this is a StringVar object
@@ -257,7 +290,8 @@ class MainWindow(tk.Tk):
                                 GPS_UPDATE="GPS updated",
                                 MAP_START="Map loading ...",
                                 MAP_READY="Map is ready",
-                                MAP_REMOVE="Map removed")
+                                MAP_REMOVE="Map removed",
+                                MAP_ERROR="Must load data before map can be displayed")
         self.STATUS_DELAY = 2000 # (ms) delay between status changes
         self.title("Robot Data Visualizer")
         self.mainWidgets()
