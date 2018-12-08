@@ -83,7 +83,7 @@ class VisualizerFrame(tk.Frame):
         self.data_manager.setup_data_files('sensor_data')
         self.data_manager.load_gps()
         x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
-        self.gps_data = [x_coords, y_coords, self.data_manager.data_dict['gps']['tstamp'].tolist()] # in image coords
+        self.gps_data = [x_coords, y_coords] # in image coords
         self.map_image = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
         self.label.config(text='Viewer')
         self.parent.set_status('DM_READY')
@@ -125,13 +125,19 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def update_timestamp(self, idx):
-        curr_tstamp = int(self.gps_data[2][idx] / 1000000)
-        self.label.config(text=str('timestamp: ' + datetime.fromtimestamp(curr_tstamp).strftime('%Y-%m-%d %H:%M:%S')))
+        curr_tstamp = self.get_timestamp_for_gps_update(idx)
+        self.label.config(text=str('timestamp: ' + curr_tstamp))
 
     def get_idx_for_gps_update(self):
         slider_val = self.parent.control.gps_control.selection_scale.get()
         idx_ratio = len(self.gps_data[0]) / 100
         return int(slider_val * idx_ratio)
+
+    def get_timestamp_for_gps_update(self, gps_data_idx):
+        idx_ratio = len(self.data_manager.data_dict['gps']['tstamp']) / len(self.gps_data[0])
+        idx = int(gps_data_idx * idx_ratio) - 1
+        ts = int(self.data_manager.data_dict['gps']['tstamp'][idx] / 1000000)
+        return datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
     def callback_map_on(self):
         # Generate map and save in the correct data directory

@@ -15,7 +15,8 @@ def generate_coordinates(data_dict):
 
     coordinates = []
 
-    for i in range(0, len(gps_lat), 50):
+    # for i in range(0, len(gps_lat), 50):
+    for i in range(0, len(gps_lat)):
         coordinates.append([gps_lng[i], gps_lat[i]])
 
     return coordinates

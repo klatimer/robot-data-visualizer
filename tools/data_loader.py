@@ -49,7 +49,6 @@ class DataLoader:
         """
         # path = self.choose_path()
         # os.chdir(path)
-        tmp = os.getcwd()
         file_name = self.chosen_data
         gps = np.loadtxt(file_name, delimiter=",")
 
