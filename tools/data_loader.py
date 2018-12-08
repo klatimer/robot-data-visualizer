@@ -53,13 +53,15 @@ class DataLoader:
         file_name = self.chosen_data
         gps = np.loadtxt(file_name, delimiter=",")
 
-        # Get three coordinates of GPS
+        # Get three coordinates of GPS and timestamp
+        tstamp = gps[:, 0]
         lat = gps[:, 3]
         lng = gps[:, 4]
         alt = gps[:, 5]
         # Store three coordinates into a dictionary
         # Transform radius to angle
         gps_dictionary = {}
+        gps_dictionary['tstamp'] = tstamp
         gps_dictionary['lat'] = lat * 180 / np.pi
         gps_dictionary['lng'] = lng * 180 / np.pi
         gps_dictionary['alt'] = alt

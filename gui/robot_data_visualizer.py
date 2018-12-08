@@ -8,6 +8,8 @@ sys.path.append('..')
 import warnings
 warnings.filterwarnings("ignore")
 
+from datetime import datetime
+
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
@@ -65,7 +67,7 @@ class VisualizerFrame(tk.Frame):
             self.setup_data(date)
         else:
             if self.data_manager.date is not date:
-                os.chdir('../..') # patch for now - add this to end of load_gps() / load_lidar() functions
+                os.chdir('../..') # TODO patched here - add this to end of load_gps() / load_lidar() functions
                 self.setup_data(date)
             else:
                 pass
@@ -81,8 +83,9 @@ class VisualizerFrame(tk.Frame):
         self.data_manager.setup_data_files('sensor_data')
         self.data_manager.load_gps()
         x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
-        self.gps_data = [x_coords, y_coords]
+        self.gps_data = [x_coords, y_coords, self.data_manager.data_dict['gps']['tstamp'].tolist()] # in image coords
         self.map_image = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
+        self.label.config(text='Viewer')
         self.parent.set_status('DM_READY')
 
     def callback_gps_on(self):
@@ -90,6 +93,7 @@ class VisualizerFrame(tk.Frame):
             self.gps_on = True
             self.parent.set_status('GPS_START')
             idx = self.get_idx_for_gps_update()
+            self.update_timestamp(idx)
             self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
             self.canvas.show()
             self.parent.set_status('GPS_READY')
@@ -100,12 +104,16 @@ class VisualizerFrame(tk.Frame):
         if self.gps_on:
             self.gps_on = False
             self.update_gps(0)
+            self.label.config(text='Viewer')
             self.parent.set_status('GPS_REMOVE')
         else:
             pass
 
     def callback_gps_slider_changed(self, event):
-        self.update_gps(self.get_idx_for_gps_update())
+        self.gps_on = True
+        idx = self.get_idx_for_gps_update()
+        self.update_gps(idx)
+        self.update_timestamp(idx)
         self.parent.set_status('GPS_UPDATE')
 
     def update_gps(self, idx):
@@ -115,6 +123,10 @@ class VisualizerFrame(tk.Frame):
             self.canvas.draw()
         else:
             pass
+
+    def update_timestamp(self, idx):
+        curr_tstamp = int(self.gps_data[2][idx] / 1000000)
+        self.label.config(text=str('timestamp: ' + datetime.fromtimestamp(curr_tstamp).strftime('%Y-%m-%d %H:%M:%S')))
 
     def get_idx_for_gps_update(self):
         slider_val = self.parent.control.gps_control.selection_scale.get()
@@ -152,7 +164,6 @@ class VisualizerFrame(tk.Frame):
         new_date = self.parent.toolbar.date.get() # Need to call get() because this is a StringVar object
         if self.parent.toolbar.date is not new_date:
             self.parent.toolbar.date.set(new_date)
-            # self.callback_initialize_data_manager(new_date)
         else:
             pass
 
