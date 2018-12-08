@@ -2,6 +2,7 @@
     used in the future.'''
 
 import os
+import pickle
 from tools.data_loader import DataLoader
 from tools.read_hokuyo_30m import read_hokuyo
 from tools.tar_extract import tar_extract
@@ -44,16 +45,37 @@ class DataManager:
         self.data_dict['gps'] = data_loader.get_gps_dictionary()
         self.data_dict['gps_range'] = data_loader.get_gps_range()
 
-    def load_lidar(self, num_samples):
+    def load_lidar(self, num_samples, pickled = None, delete_pickle = None):
         '''
         Load lidar data and choose the number of samples as user's choice.
-        :param num_samples: number of samples choose to use.
+
+        Parameters
+        ----------
+        delete_pickle
+            If delete_pickle = 'delete', delete any existing pickle of lidar.
+        num_samples
+            The number of lidar samples to use.
+        pickled
+            If pickled = 'pickled', load from existing pickle of lidar if
+            it exists and save a pickle of lidar data.
         '''
         os.chdir(self.owd)
         lidar_file_path = os.path.join(self.data_dir_name,
                                        os.path.join(self.date, 'hokuyo_30m.bin'))
-        self.data_dict['lidar'] = read_hokuyo(lidar_file_path, num_samples)
-
+        if delete_pickle == 'delete':
+            if os.path.exists("lidar.pickle"):
+                os.remove("lidar.pickle")
+                print("there is no pickle to delete")
+        if pickled == 'pickled':
+            try:
+                pickled_lidar = pickle.load(open("lidar.pickle", "rb"))
+                self.data_dict['lidar'] = pickled_lidar
+            except (OSError, IOError) as e:
+                self.data_dict['lidar'] = read_hokuyo(lidar_file_path, num_samples)
+                pickled_lidar = self.data_dict['lidar']
+                pickle.dump(pickled_lidar, open("lidar.pickle", "wb"))
+        else:
+            self.data_dict['lidar'] = read_hokuyo(lidar_file_path, num_samples)
     def load_all(self):
         '''
         load all gps and lidar data.
