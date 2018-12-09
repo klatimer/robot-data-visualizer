@@ -42,11 +42,15 @@ def read_hokuyo(filename, max_samples=1000000):
         j = 0
         while j < max_samples:
             # Read timestamp
-            utime = struct.unpack('<Q', f_bin.read(8))[0]
-            r = np.zeros(num_hits)
-            for i in range(num_hits):
-                s = struct.unpack('<H', f_bin.read(2))[0]
-                r[i] = convert(s)
+            buf = f_bin.read(8)
+            if len(buf) is 8:
+                utime = struct.unpack('<Q', buf)[0]
+                r = np.zeros(num_hits)
+                for i in range(num_hits):
+                    s = struct.unpack('<H', f_bin.read(2))[0]
+                    r[i] = convert(s)
+            else:
+                break
 
             x = r * np.cos(angles)
             y = r * np.sin(angles)

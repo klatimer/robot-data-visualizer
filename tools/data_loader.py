@@ -2,7 +2,9 @@
 This class is responsible for precessing data correctly corresponding to the user's choice.
 """
 import numpy as np
+import os
 # __all__=['DataLoader']
+DEGREE = 180
 
 class DataLoader:
     """
@@ -51,13 +53,15 @@ class DataLoader:
         file_name = self.chosen_data
         gps = np.loadtxt(file_name, delimiter=",")
 
-        # Get three coordinates of GPS
+        # Get three coordinates of GPS and timestamp
+        tstamp = gps[:, 0]
         lat = gps[:, 3]
         lng = gps[:, 4]
         alt = gps[:, 5]
         # Store three coordinates into a dictionary
         # Transform radius to angle
         gps_dictionary = {}
+        gps_dictionary['tstamp'] = tstamp
         gps_dictionary['lat'] = lat * 180 / np.pi
         gps_dictionary['lng'] = lng * 180 / np.pi
         gps_dictionary['alt'] = alt
@@ -88,10 +92,3 @@ class DataLoader:
         alt_range = (min(alt), max(alt))
 
         return (lat_range, lng_range, alt_range)
-
-# if __name__ == '__main__':
-#     # do something
-#     dl = DataLoader('gps.csv')
-#     dict = dl.get_gps_dictionary()
-#     range = dl.get_gps_range()
-#     print(range)

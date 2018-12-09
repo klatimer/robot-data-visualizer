@@ -1,3 +1,6 @@
+'''
+A smoke test for showing map without line features.
+'''
 import sys
 sys.path.append('..')
 

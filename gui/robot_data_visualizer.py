@@ -8,9 +8,13 @@ sys.path.append('..')
 import warnings
 warnings.filterwarnings("ignore")
 
+from datetime import datetime
+from PIL import ImageDraw
+
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
+import matplotlib.lines as lines
 import matplotlib.image as mpimg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -18,6 +22,7 @@ from matplotlib.backend_bases import key_press_handler
 
 import tkinter as tk
 
+from tools.get_dates_umich import get_dates_umich
 from tools.staticmap_for_gps import map_for_gps
 from tools.data_manager import DataManager
 
@@ -35,9 +40,13 @@ class VisualizerFrame(tk.Frame):
         self.ax_gps = None
         self.map_plot = None
         self.gps_plot = None
+        self.gps_on = False
         self.canvas = None
         self.data_manager = None
         self.gps_data = None
+        self.gps_on = False
+        self.map_on = False
+        self.map_image = None
         self.widgets()
 
     def widgets(self):
@@ -52,33 +61,61 @@ class VisualizerFrame(tk.Frame):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-        self.canvas.mpl_connect('key_press_event', self.on_key_event)
 
     def callback_initialize_data_manager(self):
+        # only setup a new dataset if this is the first load or the date has changed
+        date = self.parent.toolbar.date.get()
         if self.data_manager is None:
-            self.parent.set_status('DM_START', hold=True)
-            self.data_manager = DataManager('2013-01-10')
-            self.data_manager.setup_data_files('sensor_data')
-            self.data_manager.load_gps()
-            x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
-            self.gps_data = [x_coords, y_coords]
+            self.setup_data(date)
         else:
-            pass
+            if self.data_manager.date is not date:
+                os.chdir('../..') # TODO patched here - add this to end of load_gps() / load_lidar() functions
+                self.setup_data(date)
+            else:
+                pass
+
+    def setup_data(self, date):
+        if self.data_manager is not None:
+            self.ax_map.clear()
+            self.canvas.draw()
+            self.gps_on = False
+            self.map_on = False
+        self.parent.set_status('DM_START', hold=True)
+        self.data_manager = DataManager(date)
+        self.data_manager.setup_data_files('sensor_data')
+        self.data_manager.load_gps()
+        x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
+        self.gps_data = [x_coords, y_coords] # in image coords
+        self.map_image = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
+        self.label.config(text='Viewer')
         self.parent.set_status('DM_READY')
 
     def callback_gps_on(self):
-        self.parent.set_status('GPS_START')
-        idx = self.get_idx_for_gps_update()
-        self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
-        self.canvas.show()
-        self.parent.set_status('GPS_READY')
+        if not self.gps_on:
+            self.gps_on = True
+            self.parent.set_status('GPS_START')
+            idx = self.get_idx_for_gps_update()
+            self.update_timestamp(idx)
+            self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
+            self.canvas.show()
+            self.parent.set_status('GPS_READY')
+        else:
+            pass
 
     def callback_gps_off(self):
-        self.update_gps(0)
-        self.parent.set_status('GPS_REMOVE')
+        if self.gps_on:
+            self.gps_on = False
+            self.update_gps(0)
+            self.label.config(text='Viewer')
+            self.parent.set_status('GPS_REMOVE')
+        else:
+            pass
 
     def callback_gps_slider_changed(self, event):
-        self.update_gps(self.get_idx_for_gps_update())
+        self.gps_on = True
+        idx = self.get_idx_for_gps_update()
+        self.update_gps(idx)
+        self.update_timestamp(idx)
         self.parent.set_status('GPS_UPDATE')
 
     def update_gps(self, idx):
@@ -89,25 +126,69 @@ class VisualizerFrame(tk.Frame):
         else:
             pass
 
+    def update_timestamp(self, idx):
+        curr_tstamp = self.get_timestamp_for_gps_update(idx)
+        self.label.config(text=str('time stamp: ' + curr_tstamp))
+
     def get_idx_for_gps_update(self):
         slider_val = self.parent.control.gps_control.selection_scale.get()
         idx_ratio = len(self.gps_data[0]) / 100
         return int(slider_val * idx_ratio)
 
+    def get_timestamp_for_gps_update(self, gps_data_idx):
+        idx_ratio = len(self.data_manager.data_dict['gps']['tstamp']) / len(self.gps_data[0])
+        idx = int(gps_data_idx * idx_ratio) - 1
+        ts = int(self.data_manager.data_dict['gps']['tstamp'][idx] / 1000000)
+        return datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+
     def callback_map_on(self):
         # Generate map and save in the correct data directory
-        map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
-        im = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
-        self.ax_map.imshow(im)
-        self.canvas.draw()
-        self.parent.set_status('MAP_READY')
+        if not self.map_on:
+            self.map_on = True
+            if self.map_image is not None:
+                self.ax_map.imshow(self.map_image)
+                # draw scale on the map
+                map_scale = self.get_map_scale()
+                line = lines.Line2D([0, 200], [0, 0], linewidth=4, color='b')
+                self.ax_map.add_line(line)
+                distance = map_scale * 200
+                if distance > 1000:
+                    scale_str = "scale = " + str(float("%.2f" % (distance / 1000))) + " kilometers"
+                else:
+                    scale_str = "scale = " + str(float("%.2f" % (distance))) + " meters"
+                self.ax_map.text(0, -10, scale_str, fontsize=8)
+                self.canvas.draw()
+                self.parent.set_status('MAP_READY')
+            else:
+                self.parent.set_status('MAP_ERROR')
+        else:
+            pass
 
     def callback_map_off(self):
-        self.ax_map.remove()
+        if self.map_on:
+            self.map_on = False
+            self.ax_map.clear()
+            if self.gps_on:
+                self.gps_on = False
+                self.callback_gps_on() # because the previous line clears both map and gps
+            self.canvas.draw()
+        else:
+            pass
 
-    def on_key_event(self, event):
-        print('you pressed %s' % event.key)
-        key_press_handler(event, self.canvas)
+    def callback_date_changed(self):
+        new_date = self.parent.toolbar.date.get() # Need to call get() because this is a StringVar object
+        if self.parent.toolbar.date is not new_date:
+            self.parent.toolbar.date.set(new_date)
+        else:
+            pass
+
+    def get_map_scale(self):
+        k = 111000 # meters per degree of latitude (approx.)
+        lat_range = self.data_manager.data_dict['gps_range'][0]
+        d_lat_range = abs(lat_range[0] - lat_range[1])
+        d_x_pixels = abs(max(self.gps_data[0]) - min(self.gps_data[0]))
+        map_scale = d_lat_range * k / d_x_pixels
+        return map_scale # units of meters per pixel
 
 
 class ToolbarFrame(tk.Frame):
@@ -118,19 +199,29 @@ class ToolbarFrame(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.insert_button = None
+        self.date = None
+        self.dates = get_dates_umich()
+        self.load_button = None
+        self.option_menu = None
         self.widgets()
 
     def widgets(self):
-        self.insert_button = tk.Button(self, text="Load Data")
-        self.insert_button.pack(side=tk.LEFT, padx=2, pady=2)
+        self.dates = get_dates_umich()
+        self.load_button = tk.Button(self, text="Load Data")
+        self.load_button.pack(side=tk.LEFT, padx=2, pady=2)
 
+        self.date = tk.StringVar(self)
+        self.date.set(self.dates[24])
+        self.option_menu = tk.OptionMenu(self, self.date, *self.dates, command=self.callback_date_changed)
+        self.option_menu.pack(side=tk.LEFT, padx=2, pady=2)
         #print_button = tk.Button(self, text="Print")
         #print_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     def bind_widgets(self):
-        self.insert_button.config(command=self.parent.window.callback_initialize_data_manager)
+        self.load_button.config(command=self.parent.window.callback_initialize_data_manager)
 
+    def callback_date_changed(self, event):
+        self.parent.window.callback_date_changed()
 
 class ControlFrame(tk.Frame):
     """
@@ -233,7 +324,8 @@ class MainWindow(tk.Tk):
                                 GPS_UPDATE="GPS updated",
                                 MAP_START="Map loading ...",
                                 MAP_READY="Map is ready",
-                                MAP_REMOVE="Map removed")
+                                MAP_REMOVE="Map removed",
+                                MAP_ERROR="Must load data before map can be displayed")
         self.STATUS_DELAY = 2000 # (ms) delay between status changes
         self.title("Robot Data Visualizer")
         self.mainWidgets()
