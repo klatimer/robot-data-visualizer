@@ -1,14 +1,16 @@
-import os
-import sys
-# sys.path.append('..')
+'''This file is used to generate all points needed for plot in real-time.'''
 
+import os
 from staticmap import Line
 from tools.static_map_base_layer import StaticMapBaseLayer
-
-import matplotlib.pyplot as plt
-
+from tools.data_manager import DataManager
 
 def generate_coordinates(data_dict):
+    '''
+    This function preprocess gps data to make it useful for future use.
+    :param data_dict: input gps data from dataManager
+    :return: coordinates[[lng, lat], [], ...]
+    '''
     gps_data = data_dict['gps']
     gps_lat = gps_data['lat']
     gps_lng = gps_data['lng']
@@ -22,6 +24,11 @@ def generate_coordinates(data_dict):
     return coordinates
 
 def divide_coordinates(coordinates):
+    '''
+    Divide coordinates into about 50 pieces for following use.
+    :param coordinates: coordinates contains gps data.
+    :return: divided coordinates
+    '''
     interval = len(coordinates) // 50 + 1
     divided_coordinates = []
     for i in range(0, len(coordinates), interval):
@@ -29,6 +36,9 @@ def divide_coordinates(coordinates):
     return divided_coordinates
 
 def map_for_gps_gif():
+    '''
+    This function is used to generate 48 pictures to generate gif.
+    '''
     dm = DataManager('2013-01-10')
     # Download and extract sensor data
     dm.setup_data_files('sensor_data')
@@ -58,6 +68,12 @@ def map_for_gps_gif():
 
 
 def map_for_gps(data_dict, data_dir):
+    '''
+    This function is used to generate essential (px_x, px_y) coordinates to draw path.
+    :param data_dict: where to get data
+    :param data_dir: where to put output picture
+    :return: x_coordinates and y_coordinates in pixels for gps data
+    '''
     m = StaticMapBaseLayer(1000, 1000, 80)
 
     coordinates = generate_coordinates(data_dict)
@@ -75,12 +91,3 @@ def map_for_gps(data_dict, data_dir):
     y_coords = [item[1] for item in points]
 
     return x_coords, y_coords
-
-if __name__ == '__main__':
-    from tools.data_manager import DataManager
-    dm = DataManager('2013-01-10')
-    # Download and extract sensor data
-    dm.setup_data_files('sensor_data')
-    # load gps
-    dm.load_gps()
-    map_for_gps(dm.data_dict, dm.data_dir)

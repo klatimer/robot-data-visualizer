@@ -4,6 +4,7 @@ This class is responsible for precessing data correctly corresponding to the use
 import numpy as np
 import os
 # __all__=['DataLoader']
+DEGREE = 180
 
 class DataLoader:
     """
@@ -91,10 +92,3 @@ class DataLoader:
         alt_range = (min(alt), max(alt))
 
         return (lat_range, lng_range, alt_range)
-
-# if __name__ == '__main__':
-#     # do something
-#     dl = DataLoader('gps.csv')
-#     dict = dl.get_gps_dictionary()
-#     range = dl.get_gps_range()
-#     print(range)
