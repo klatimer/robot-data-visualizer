@@ -1,8 +1,6 @@
-"""
-This file is the main viewing window of the application.
-"""
 import os
 import sys
+sys.path.append('.')
 sys.path.append('..')
 
 import warnings
@@ -25,8 +23,8 @@ from tools.data_manager import DataManager
 
 
 class VisualizerFrame(tk.Frame):
-    """This is the main window where the robot data is seen by the user.
-
+    """
+    This is the main window where the robot data is seen by the user.
     """
 
     def __init__(self, parent):
@@ -47,7 +45,11 @@ class VisualizerFrame(tk.Frame):
         self.widgets()
 
     def widgets(self):
-        # Label for visualizer
+        """
+        Set up widgets for the frame.
+
+        :return: None
+        """
         self.label = tk.Label(self, text="Viewer")
         self.label.pack(side=tk.TOP)
 
@@ -60,7 +62,11 @@ class VisualizerFrame(tk.Frame):
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
     def callback_initialize_data_manager(self):
-        # only setup a new dataset if this is the first load or the date has changed
+        """
+        This callback responds to the *Load Data* button.
+
+        :return: None
+        """
         date = self.parent.toolbar.date.get()
         if self.data_manager is None:
             self.setup_data(date)
@@ -72,6 +78,13 @@ class VisualizerFrame(tk.Frame):
                 pass
 
     def setup_data(self, date):
+        """
+        This function sets up all of the data needed by the application.
+
+        :param date: Determines which date from the robotics dataset to use.
+        :type date: str.
+        :return: None
+        """
         if self.data_manager is not None:
             self.ax_map.clear()
             self.canvas.draw()
@@ -88,6 +101,11 @@ class VisualizerFrame(tk.Frame):
         self.parent.set_status('DM_READY')
 
     def callback_gps_on(self):
+        """
+        This callback responds to the *On* button under the *GPS Control* menu.
+
+        :return: None
+        """
         if not self.gps_on:
             self.gps_on = True
             self.parent.set_status('GPS_START')
@@ -100,6 +118,11 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def callback_gps_off(self):
+        """
+        This callback responds to the *Off* button under the *GPS Control* menu.
+
+        :return: None
+        """
         if self.gps_on:
             self.gps_on = False
             self.update_gps(0)
@@ -109,6 +132,11 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def callback_gps_slider_changed(self, event):
+        """
+        This callback responds to the *Off* button under the *GPS Control* menu.
+
+        :return: None
+        """
         self.gps_on = True
         idx = self.get_idx_for_gps_update()
         self.update_gps(idx)
@@ -116,6 +144,13 @@ class VisualizerFrame(tk.Frame):
         self.parent.set_status('GPS_UPDATE')
 
     def update_gps(self, idx):
+        """
+        This function updates the GPS data that is displayed in the main viewing window.
+
+        :param idx: Index into the array of GPS data that is to be displayed.
+        :type idx: int.
+        :return: None
+        """
         if self.gps_data is not None:
             self.gps_plot.set_xdata(self.gps_data[0][:idx])
             self.gps_plot.set_ydata(self.gps_data[1][:idx])
@@ -124,22 +159,44 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def update_timestamp(self, idx):
+        """
+        This function updates the timestamp in the main viewing window.
+
+        :param idx: Index into the array of GPS data to be used for retrieval of the time stamp.
+        :type idx: int.
+        :return: None
+        """
         curr_tstamp = self.get_timestamp_for_gps_update(idx)
         self.label.config(text=str('time stamp: ' + curr_tstamp))
 
     def get_idx_for_gps_update(self):
+        """
+        This function returns the index to be used for updating the GPS data.
+
+        :return: int -- the index to be used for the GPS update
+        """
         slider_val = self.parent.control.gps_control.selection_scale.get()
         idx_ratio = len(self.gps_data[0]) / 100
         return int(slider_val * idx_ratio)
 
     def get_timestamp_for_gps_update(self, gps_data_idx):
+        """
+        This function returns the timestamp in a readable format for the given GPS data index.
+
+        :param gps_data_idx: Index into the array of GPS data to be used for retrieval of the time stamp.
+        :return: str -- the timestamp
+        """
         idx_ratio = len(self.data_manager.data_dict['gps']['tstamp']) / len(self.gps_data[0])
         idx = int(gps_data_idx * idx_ratio) - 1
         ts = int(self.data_manager.data_dict['gps']['tstamp'][idx] / 1000000)
         return datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
     def callback_map_on(self):
-        # Generate map and save in the correct data directory
+        """
+        This callback responds to the *On* button under the *Map Control* menu.
+
+        :return: None
+        """
         if not self.map_on:
             self.map_on = True
             if self.map_image is not None:
@@ -162,6 +219,11 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def callback_map_off(self):
+        """
+        This callback responds to the *Off* button under the *Map Control* menu.
+
+        :return: None
+        """
         if self.map_on:
             self.map_on = False
             self.ax_map.clear()
@@ -173,6 +235,11 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def callback_date_changed(self):
+        """
+        This callback responds to a change in the date selection menu in the toolbar.
+
+        :return: None
+        """
         new_date = self.parent.toolbar.date.get() # Need to call get() because this is a StringVar object
         if self.parent.toolbar.date is not new_date:
             self.parent.toolbar.date.set(new_date)
@@ -180,6 +247,11 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def get_map_scale(self):
+        """
+        This function calculates the map scale in units of meters per pixel.
+
+        :return: float64 -- map scale (m/px)
+        """
         k = 111000 # meters per degree of latitude (approx.)
         lat_range = self.data_manager.data_dict['gps_range'][0]
         d_lat_range = abs(lat_range[0] - lat_range[1])
@@ -203,6 +275,11 @@ class ToolbarFrame(tk.Frame):
         self.widgets()
 
     def widgets(self):
+        """
+        Set up widgets for the frame.
+
+        :return: None
+        """
         self.dates = get_dates_umich()
         self.load_button = tk.Button(self, text="Load Data")
         self.load_button.pack(side=tk.LEFT, padx=2, pady=2)
@@ -211,10 +288,13 @@ class ToolbarFrame(tk.Frame):
         self.date.set(self.dates[24])
         self.option_menu = tk.OptionMenu(self, self.date, *self.dates, command=self.callback_date_changed)
         self.option_menu.pack(side=tk.LEFT, padx=2, pady=2)
-        #print_button = tk.Button(self, text="Print")
-        #print_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     def bind_widgets(self):
+        """
+        Bind widgets to their callback functions.
+
+        :return: None
+        """
         self.load_button.config(command=self.parent.window.callback_initialize_data_manager)
 
     def callback_date_changed(self, event):
@@ -247,6 +327,11 @@ class ControlFrame(tk.Frame):
             self.widgets()
 
         def widgets(self):
+            """
+            Set up widgets for the frame.
+
+            :return: None
+            """
             label = tk.Label(self, text="GPS Control", bg="blue", fg="white")
             label.pack(side=tk.TOP, fill=tk.X)
 
@@ -261,6 +346,11 @@ class ControlFrame(tk.Frame):
             self.off_button.pack(side=tk.RIGHT)
 
         def bind_widgets(self):
+            """
+            Bind widgets to their callback functions.
+
+            :return: None
+            """
             self.on_button.config(command=self.root.window.callback_gps_on)
             self.off_button.config(command=self.root.window.callback_gps_off)
             self.selection_scale.bind("<ButtonRelease-1>", self.root.window.callback_gps_slider_changed)
@@ -277,6 +367,11 @@ class ControlFrame(tk.Frame):
             self.widgets()
 
         def widgets(self):
+            """
+            Set up widgets for the frame.
+
+            :return: None
+            """
             label = tk.Label(self, text="Map Control", bg="blue", fg="white")
             label.pack(fill=tk.X)
 
@@ -287,16 +382,31 @@ class ControlFrame(tk.Frame):
             self.off_button.pack(side=tk.RIGHT)
 
         def bind_widgets(self):
+            """
+            Bind widgets to their callback functions.
+
+            :return: None
+            """
             self.on_button.config(command=self.root.window.callback_map_on)
             self.off_button.config(command=self.root.window.callback_map_off)
 
     def widgets(self):
+        """
+        Set up widgets for the frame.
+
+        :return: None
+        """
         self.gps_control = self.GpsControlFrame(self, self.root)
         self.gps_control.pack(fill=tk.X)
         self.map_control = self.MapControlFrame(self, self.root)
         self.map_control.pack(fill=tk.X)
 
     def bind_widgets(self):
+        """
+        Bind widgets to their callback functions.
+
+        :return: None
+        """
         self.gps_control.bind_widgets()
         self.map_control.bind_widgets()
 
@@ -329,6 +439,11 @@ class MainWindow(tk.Tk):
 
 
     def mainWidgets(self):
+        """
+        Set up widgets for the main window frame.
+
+        :return: None
+        """
         # Toolbar
         self.toolbar = ToolbarFrame(self)
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
@@ -337,7 +452,7 @@ class MainWindow(tk.Tk):
         self.status = tk.Label(self, text=self.status_text['READY'], bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status.pack(side=tk.BOTTOM, fill=tk.X)
 
-        # Controls - SLAM and Map
+        # Controls - GPS and Map
         self.control = ControlFrame(self)
         self.control.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -351,6 +466,15 @@ class MainWindow(tk.Tk):
 
 
     def set_status(self, status, hold=False):
+        """
+        This function sets the status bar at the bottom of the window (with a time delay).
+
+        :param status: Key to look up status message in the status_text dictionary.
+        :type status: str.
+        :param hold: When *hold=True*, the status update will not time out.
+        :type hold: bool.
+        :return:
+        """
         if status in self.status_text.keys():
             self.status.config(text=self.status_text[status])
             if not hold:
