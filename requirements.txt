@@ -1,5 +1,6 @@
 certifi==2018.10.15
 chardet==3.0.4
+numpy==1.15.4
 cvxpy==1.0.10
 cycler==0.10.0
 dill==0.2.8.2
@@ -10,7 +11,6 @@ idna==2.7
 kiwisolver==1.0.1
 matplotlib==3.0.1
 multiprocess==0.70.6.1
-numpy==1.15.4
 osqp==0.4.1
 pandas==0.23.4
 Pillow==5.3.0
