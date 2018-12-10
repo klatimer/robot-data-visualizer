@@ -8,6 +8,7 @@ import tools.data_manager as DM
 class BasicTest(unittest.TestCase):
     def setUp(self):
         self.Datamanager = DM.DataManager('2013-01-10')
+        self.Datamanager.setup_data_files('sensor_data')
         self.Datamanager.load_gps()
 
     def test_length(self):
