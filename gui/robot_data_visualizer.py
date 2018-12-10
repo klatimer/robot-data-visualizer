@@ -9,16 +9,13 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from datetime import datetime
-from PIL import ImageDraw
 
 import matplotlib
 matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
 import matplotlib.lines as lines
 import matplotlib.image as mpimg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from matplotlib.backend_bases import key_press_handler
 
 import tkinter as tk
 

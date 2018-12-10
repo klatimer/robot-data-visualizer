@@ -116,9 +116,9 @@ data/*
 *.png
 
 # Sphinx autodoc folders - only keep the folders and .keep file
-_build/*
-!_build/.keep
-_static/*
-!_static/.keep
-_templates/*
-!_templates/.keep
+doc/_build/*
+doc/!_build/.keep
+doc/_static/*
+doc/!_static/.keep
+doc/_templates/*
+doc/!_templates/.keep

@@ -6,7 +6,7 @@ from os import path
 setup(
 	name = "robot-data-visualizer",
 
-	version = "1.0.0",
+	version = "0.1.0",
 
 	packages = find_packages(),
 )
