@@ -35,6 +35,7 @@ class DataManager:
         '''
         filename = download_tar(self.base_name, self.date, data_type)
         tar_extract(filename)
+        os.chdir(self.owd)
 
     def load_gps(self):
         '''

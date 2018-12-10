@@ -1,4 +1,5 @@
 #code originally from https://stackoverflow.com/a/30888321
+import os
 
 def tar_extract(file_name):
     import tarfile

@@ -10,7 +10,7 @@ class TestDataManager(unittest.TestCase):
     def setUp(self):
         self.date = '2013-01-10'
         self.dm = DataManager(self.date)
-        self.root_path = os.path.abspath('..')
+        self.root_path = os.path.abspath('.')
         self.data_dir_root = os.path.join(self.root_path, self.dm.data_dir_name)
         self.curr_data_dir = os.path.join(self.data_dir_root, self.date)
 
@@ -20,10 +20,8 @@ class TestDataManager(unittest.TestCase):
 
     def test_setup_lidar_data(self):
         self.dm.setup_data_files('hokuyo')
-        os.chdir(self.curr_data_dir)
         file_name = self.date + '_hokuyo.tar.gz'
-        self.assertTrue(os.path.isfile(file_name))
-
+        self.assertTrue(os.path.isfile(os.path.join(self.data_dir_root, file_name)))
 
     def test_load_gps(self):
         self.dm.setup_data_files('sensor_data')
