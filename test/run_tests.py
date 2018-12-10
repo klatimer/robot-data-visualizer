@@ -1,8 +1,6 @@
 import unittest
 
-test_modules = [
-    "test_sample"
-]
+test_modules = ["test_sample"]
 
 suite = unittest.TestSuite()
 
