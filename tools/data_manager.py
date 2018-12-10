@@ -10,8 +10,8 @@ from tools.download_tar import download_tar
 
 
 class DataManager:
-    '''This class handles downloading, extracting and storing data to be used
-    by the main application. '''
+    '''This class handles downloading, extracting and storing data to be used by the main application.
+    '''
 
     def __init__(self, date):
         '''

@@ -25,8 +25,8 @@ from tools.data_manager import DataManager
 
 
 class VisualizerFrame(tk.Frame):
-    """
-    This class represents the frame where the main visualization takes place.
+    """This is the main window where the robot data is seen by the user.
+
     """
 
     def __init__(self, parent):

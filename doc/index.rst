@@ -7,19 +7,18 @@ Welcome to Robot Data Visualizer's documentation!
 =================================================
 
 .. toctree::
+   :titlesonly:
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Table of Contents:
+   :glob:
 
-
-
-.. automodule:: misc.iterative_closest_point
-
-.. autoclass:: tools.data_manager
-    :members:
+   gui
+   tools
+   misc
 
 Indices and tables
-==================
+------------------
 
-* :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
