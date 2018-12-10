@@ -78,6 +78,7 @@ class DataManager:
                 pickle.dump(pickled_lidar, open("lidar.pickle", "wb"))
         else:
             self.data_dict['lidar'] = read_hokuyo(lidar_file_path, num_samples)
+
     def load_all(self):
         '''
         load all gps and lidar data.
