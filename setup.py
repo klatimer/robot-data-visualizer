@@ -1,12 +1,8 @@
-
 """A setuptools based setup module"""
 from setuptools import setup, find_packages
-from os import path
 
 setup(
 	name = "robot-data-visualizer",
-
-	version = "0.1.0",
-
+	version = "0.1",
 	packages = find_packages(),
 )
