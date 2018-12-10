@@ -1,6 +1,15 @@
 import unittest
 import numpy as np
 import sys
+import os
+"""
+var = os.getcwd()
+print('current working directory: ' + var)
+test_path = os.path.abspath('.')
+print('path to test dir: ' + test_path)
+os.chdir(test_path)
+"""
+sys.path.append('.')
 sys.path.append('..')
 import tools.data_manager as DM
 
@@ -21,3 +30,4 @@ class BasicTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
