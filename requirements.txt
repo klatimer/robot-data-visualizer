@@ -9,7 +9,6 @@ future==0.17.1
 idna==2.7
 kiwisolver==1.0.1
 matplotlib==3.0.1
-mkl-fft==1.0.6
 multiprocess==0.70.6.1
 numpy==1.15.4
 osqp==0.4.1
