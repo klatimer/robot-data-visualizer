@@ -51,7 +51,8 @@ class DataLoader:
         # path = self.choose_path()
         # os.chdir(path)
         file_name = self.chosen_data
-        gps = np.loadtxt(file_name, delimiter=",")
+        path = os.path.join(os.path.abspath('.'), file_name)
+        gps = np.loadtxt(path, delimiter=",")
 
         # Get three coordinates of GPS and timestamp
         tstamp = gps[:, 0]

@@ -18,7 +18,9 @@ class DataManager:
         Initialize all things needed to manager data.
         :param date: The data of data user want choose.
         '''
-        self.owd = os.getcwd()
+        # self.owd = os.getcwd()
+        tmp = os.getcwd()
+        self.owd = os.path.abspath('.')
         self.data_dir_name = 'data'
         self.base_name = 'http://robots.engin.umich.edu/nclt'
         self.date = date
