@@ -1,11 +1,14 @@
+sudo: required
 language: python
 python:
-  - 3.5.6
+  - '3.5'
 cache: pip
+before_install:
+  - chmod +x test/test_sample.py
 install:
   - pip install -r requirements.txt
 script:
-  - test/run_tests.py
+  - python test/run_tests.py
 branches:
   only:
     - master
