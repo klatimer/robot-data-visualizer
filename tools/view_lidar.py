@@ -48,6 +48,8 @@ def hokuyo_plot(axis):
     axis.plot([line_start_x, line_end_x], [line_start_y, line_end_y], 'b')
 
 
+import numpy as np
+
 def threshold_lidar_pts(data_i):
     """
     Set points in lidar frame with values less than one
@@ -58,15 +60,12 @@ def threshold_lidar_pts(data_i):
     # value below which to threshold data
     thresh = 1
     x_lidar, y_lidar, time = data_i
-    # index x values below threshold
-    threshold_indices = x_lidar < thresh
-    # set x lidar points below threshold to 0
-    x_lidar[threshold_indices] = 0
-    # index y values below threshold
-    threshold_indices = y_lidar < thresh
-    # set x lidar points below threshold to 0
-    y_lidar[threshold_indices] = 0
-    # index lidar points with nonzero values
+    # index x and y values below threshold
+    index_x = np.where(np.logical_and(abs(x_lidar) > 0, abs(x_lidar) < thresh))
+    index_y = np.where(np.logical_and(abs(y_lidar) > 0, abs(y_lidar) < thresh))
+    x_lidar[index_x] = 0
+    y_lidar[index_y] = 0
+
     x_index = np.nonzero(x_lidar)
     y_index = np.nonzero(y_lidar)
     # convert index list to string for comparison
