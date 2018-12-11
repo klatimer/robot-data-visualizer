@@ -1,6 +1,6 @@
 certifi==2018.10.15
 chardet==3.0.4
-numpy==1.15.4
+numpy==1.15.0
 cvxpy==1.0.10
 cycler==0.10.0
 dill==0.2.8.2
