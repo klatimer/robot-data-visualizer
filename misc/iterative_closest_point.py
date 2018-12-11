@@ -1,8 +1,11 @@
 """
 
-Iterative Closest Point (ICP) SLAM example
+iterative_closest_point.py receives lidar data and computes
+an Iterative Closest Point (ICP) SLAM example. This module
+has yet to be implemented in the final build because more
+lidar points per scan are required to get accurate results.
 
-author: Atsushi Sakai (@Atsushi_twi)
+SLAM author: Atsushi Sakai (@Atsushi_twi)
 
 """
 
@@ -25,7 +28,8 @@ show_animation = True
 
 def ICP_matching(ppoints, cpoints,time):
     """
-    Iterative Closest Point matching
+    The Iterative Closest Point (ICP) matching algorithm
+    finds nearest neighbors of lidar points.
 
     - input
     ppoints: 2D points in the previous frame
@@ -83,7 +87,11 @@ def ICP_matching(ppoints, cpoints,time):
 
 def update_homogeneous_matrix(Hin, R, T):
     """
-    Update the homogeneous matrix (translation and rotation matrices combined)
+    This function updates the homogeneous matrix
+    (translation and rotation matrices combined)
+    and then combines the translation and rotation
+    matrices resulting from the current scan. Then
+    it outputs the updated homogeneous matrix.
 
     - input
     Hin: initial/previous homogeneous matrix
@@ -122,7 +130,10 @@ def update_homogeneous_matrix(Hin, R, T):
 
 def nearest_neighbor_assosiation(ppoints, cpoints):
     """
-    Associates new LIDAR points with previous LIDAR points
+    This function associates new LIDAR points
+    with previous LIDAR points and computes
+    the total error between current and previous
+    lidar scans.
 
     - input
     ppoints: 2D points in the previous frame
@@ -158,8 +169,8 @@ def nearest_neighbor_assosiation(ppoints, cpoints):
 
 def SVD_motion_estimation(ppoints, cpoints):
     """
-    performs single value decomposition
-    to determine rotation and translation
+    This function performs single value decomposition
+    to determine current rotation and translation values
 
     - input
     ppoints: 2D points in the previous frame
@@ -185,6 +196,21 @@ def SVD_motion_estimation(ppoints, cpoints):
     return R, t
 
 def choose_lidar_pts(i, data_i):
+    """
+        This function removes all zero-value lidar points
+        from the lidar scan and returns nonzero points and time stamp
+        associated with the lidar scan.
+
+        - input
+        i: current scan value
+        data_i: current lidar scan with x,y and timestamp data
+
+        - output
+        x: non-zero lidar x values
+        y: non-zero lidar y values
+        time: time stamp
+
+        """
     min_lidar_pts = 100
     x, y, time = data_i
     #print(x)
@@ -210,6 +236,21 @@ def choose_lidar_pts(i, data_i):
 
 
 def main():
+    """
+        This function runs slam and plots
+        calculated robot pose and lidar points
+        associated with each timestep.
+        - input
+        None
+
+
+        - output
+        Robot Pose plotted with lidar points (in progress)
+
+        """
+
+
+
     print(__file__ + " start!!")
 
     # simulation parameters
