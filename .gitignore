@@ -114,6 +114,7 @@ data/*
 
 # Images
 *.png
+!img/*.png
 
 # Sphinx autodoc folders - only keep the folders and .keep file
 doc/_build/*
