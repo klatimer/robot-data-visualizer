@@ -122,3 +122,6 @@ doc/_static/*
 doc/!_static/.keep
 doc/_templates/*
 doc/!_templates/.keep
+
+# Pickled files
+*.pickle
