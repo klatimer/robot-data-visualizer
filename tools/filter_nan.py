@@ -1,8 +1,11 @@
-"""
-This filter is for filter the NaNs from csv file and return a new csv without NaN.
-"""
-
 def filter_nan(file_name):
+    """
+    This function filters out NaN values from a csv file.
+
+    :param file_name: Name of csv file to filter.
+    :type file_name: str.
+    :return: None
+    """
 
     with open(file_name, 'r')as r:
         lines = r.readlines()
@@ -10,7 +13,3 @@ def filter_nan(file_name):
         for l in lines:
             if 'nan' not in l:
                 w.write(l)
-
-# Put gps.csv to the same directory then run this main.
-if __name__ == '__main__':
-    filter_nan('gps.csv')

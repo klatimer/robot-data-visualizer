@@ -1,19 +1,18 @@
-# !/usr/bin/python
-# Base on http://robots.engin.umich.edu/nclt/python/read_hokuyo_30m.py
-# Example code to go through the hokuyo_30m.bin file, read timestamps and the hits
-# in each packet, and plot them.
-#
-# To call:
-#
-#   python read_hokuyo_30m.py hokuyo_30m.bin
-#
+"""
+code referenced from: http://robots.engin.umich.edu/nclt/python/read_hokuyo_30m.py
+"""
 
-import sys
 import struct
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 def convert(x_s):
+    """
+    This function converts the raw hokuyo data into meters.
+
+    :param x_s: scaled data
+    :return: float64 -- distance in meters
+    """
 
     scaling = 0.005 # 5 mm
     offset = -100.0
@@ -23,6 +22,16 @@ def convert(x_s):
     return x
 
 def read_hokuyo(filename, max_samples=1000000):
+    """
+    This function reads the hokuyo data from a binary file.
+
+    :param filename: Binary file to read.
+    :type filename: str.
+    :param max_samples: Maximum number of samples that will be read.
+    :type num_samples: int.
+    :return: list -- lidar data in cartesian coordinates
+    """
+
     # List of tuples (x, y, timestamp) to return
     # x and y are lists of values
     data = []

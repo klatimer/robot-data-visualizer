@@ -1,5 +1,13 @@
+"""
+dates referenced from: http://robots.engin.umich.edu/nclt/downloader.py
+"""
+
 def get_dates_umich():
-    # These are all the selectable dates in the umich robotics dataset
+    """
+    These are all the selectable dates in the UMich long term robotics dataset.
+
+    :return: list -- all of the available dates that can be downloaded
+    """
     dates = []
     dates.append('2012-01-08')
     dates.append('2012-01-15')
