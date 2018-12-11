@@ -9,7 +9,7 @@ fastcache==1.0.2
 future==0.17.1
 idna==2.7
 kiwisolver==1.0.1
-matplotlib==3.0.2
+matplotlib==2.2.2
 multiprocess==0.70.6.1
 osqp==0.4.1
 pandas==0.23.4
