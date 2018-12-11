@@ -21,31 +21,19 @@ NCLT data set is used, which can be found here: http://robots.engin.umich.edu/nc
          |- test_data_loader.py
          |- test_data_manager.py
          |- ...
-      |- misc/
-         |- iterative_closest_point.py
-         |- static_map_example.py
-         |- try_data_manager.py
-         |- ...
       |- tools/
          |- __init__.py
          |- data_loader.py
          |- data_manager.py
          |- download_tar.py
-         |- filter_nan.py
-         |- get_dates_umich.py
-         |- read_hokuyo_30m.py
-         |- static_map_base_layer.py
-         |- staticmap_for_gps.py
-         |- tar_extract.py
+         |- ...
       |- docs/
-         |- Component Specification.pdf
-         |- Functional Specification.pdf
+         |- ...
          |- Makefile
          |- make.bat
-         |- build/
+         |- _build/
             |- ...
          |- index.rst
-         |- misc.rst
          |- ...
       |- setup.py
       |- .gitignore
