@@ -86,7 +86,9 @@ without wasting to much time in process data and see how it goes.
 
 In general, the data is composed by two kinds of data: GPS data and LIDAR data.
 
-###To visualize GPS data:
+
+### To visualize GPS data:
+
 
 First type `cd gui` at root directory of this project to go to gui directory, then type
 ```bash
@@ -105,7 +107,8 @@ To use this GUI, you can follow the instructions here:
 Then you can see a pretty GUI shows here:
 * @ken, put a complete photo of GUI here.
 
-###To visualize LIDAR data:
+
+### To visualize LIDAR data:
 * @ken Optional if LIDAR can be integrated greatly.
 
 
