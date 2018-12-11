@@ -7,6 +7,9 @@ before_install:
   - chmod +x test/run_tests.py
   - chmod +x test/test_data_loader.py
   - chmod +x test/test_data_manager.py
+  - chmod +x test/test_download_tar.py
+  - chmod +x test/test_get_dates_umich.py
+  - chmod +x test/test_tar_extract.py
 install:
   - pip install -r requirements.txt
 script:
@@ -15,5 +18,3 @@ branches:
   only:
     - master
     - dev
-    - ken-dev
-    - hao-dev
