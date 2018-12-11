@@ -36,6 +36,11 @@ Reading data from the Hokuyo lidar scanner
 .. automodule:: tools.read_hokuyo_30m
     :members:
 
+Addind range and dead zone markers to a lidar plot
+--------------------------------------------------
+.. automodule:: tools.view_lidar
+    :members:
+
 Staticmap API function overrides
 --------------------------------
 .. automodule:: tools.static_map_base_layer
