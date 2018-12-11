@@ -114,16 +114,20 @@ class VisualizerFrame(tk.Frame):
 
         :return: None
         """
-        if not self.gps_on:
-            self.gps_on = True
-            self.parent.set_status('GPS_START')
-            idx = self.get_idx_for_gps_update()
-            self.update_timestamp(idx)
-            self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
-            self.canvas.show()
-            self.parent.set_status('GPS_READY')
+        if not self.lidar_on:
+            if not self.gps_on:
+                self.gps_on = True
+                self.parent.set_status('GPS_START')
+                idx = self.get_idx_for_gps_update()
+                self.update_timestamp(idx)
+                self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
+                self.canvas.show()
+                self.parent.set_status('GPS_READY')
+            else:
+                pass
         else:
-            pass
+            self.callback_lidar_off()
+            self.callback_gps_on()
 
     def callback_gps_off(self):
         """
@@ -142,7 +146,6 @@ class VisualizerFrame(tk.Frame):
     def callback_gps_slider_changed(self, event):
         """
         This callback responds to the *Off* button under the *GPS Control* menu.
-
         :return: None
         """
         self.gps_on = True
@@ -154,7 +157,6 @@ class VisualizerFrame(tk.Frame):
     def update_gps(self, idx):
         """
         This function updates the GPS data that is displayed in the main viewing window.
-
         :param idx: Index into the array of GPS data that is to be displayed.
         :type idx: int.
         :return: None
@@ -180,11 +182,10 @@ class VisualizerFrame(tk.Frame):
     def get_idx_for_gps_update(self):
         """
         This function returns the index to be used for updating the GPS data.
-
         :return: int -- the index to be used for the GPS update
         """
         slider_val = self.parent.control.gps_control.selection_scale.get()
-        idx_ratio = len(self.gps_data) / 100
+        idx_ratio = len(self.gps_data[0]) / 100
         return int(slider_val * idx_ratio)
 
     def get_timestamp_for_gps_update(self, gps_data_idx):
@@ -205,26 +206,30 @@ class VisualizerFrame(tk.Frame):
 
         :return: None
         """
-        if not self.map_on:
-            self.map_on = True
-            if self.map_image is not None:
-                self.ax_map.imshow(self.map_image)
-                # draw scale on the map
-                map_scale = self.get_map_scale()
-                line = lines.Line2D([0, 200], [0, 0], linewidth=4, color='b')
-                self.ax_map.add_line(line)
-                distance = map_scale * 200
-                if distance > 1000:
-                    scale_str = "scale = " + str(float("%.2f" % (distance / 1000))) + " kilometers"
+        if not self.lidar_on:
+            if not self.map_on:
+                self.map_on = True
+                if self.map_image is not None:
+                    self.ax_map.imshow(self.map_image)
+                    # draw scale on the map
+                    map_scale = self.get_map_scale()
+                    line = lines.Line2D([0, 200], [0, 0], linewidth=4, color='b')
+                    self.ax_map.add_line(line)
+                    distance = map_scale * 200
+                    if distance > 1000:
+                        scale_str = "scale = " + str(float("%.2f" % (distance / 1000))) + " kilometers"
+                    else:
+                        scale_str = "scale = " + str(float("%.2f" % (distance))) + " meters"
+                    self.ax_map.text(0, -10, scale_str, fontsize=8)
+                    self.canvas.draw()
+                    self.parent.set_status('MAP_READY')
                 else:
-                    scale_str = "scale = " + str(float("%.2f" % (distance))) + " meters"
-                self.ax_map.text(0, -10, scale_str, fontsize=8)
-                self.canvas.draw()
-                self.parent.set_status('MAP_READY')
+                    self.parent.set_status('MAP_ERROR')
             else:
-                self.parent.set_status('MAP_ERROR')
+                pass
         else:
-            pass
+            self.callback_lidar_off()
+            self.callback_map_on()
 
     def callback_map_off(self):
         """
@@ -282,7 +287,7 @@ class VisualizerFrame(tk.Frame):
         """
         slider_val = self.parent.control.lidar_control.selection_scale.get()
         idx_ratio = len(self.lidar_data) / 100
-        return max(int(slider_val * idx_ratio), 0)
+        return max(int(slider_val * idx_ratio) - 1, 0)
 
     def update_lidar(self, idx):
         if self.lidar_data is not None:
@@ -293,72 +298,34 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def callback_lidar_on(self):
-        """
-            if not self.gps_on:
-            self.gps_on = True
-            self.parent.set_status('GPS_START')
-            idx = self.get_idx_for_gps_update()
-            self.update_timestamp(idx)
-            self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
+        # Turn off gps and map because the lidar cannot be overlaid at this time.
+        if not self.lidar_on:
+            self.lidar_on = True
+            self.callback_gps_off()
+            self.callback_map_off()
+            if self.data_manager is None:
+                self.callback_initialize_data_manager()
+            if not 'lidar' in self.data_manager.data_dict.keys():
+                self.data_manager.setup_data_files('hokuyo')
+                pickled = True
+                delete_pickle = False
+                self.data_manager.load_lidar(4000, pickled, delete_pickle)
+                self.lidar_data = self.data_manager.data_dict['lidar']
+
+            hokuyo_plot(self.ax_lidar)
+            self.lidar_plot = self.ax_lidar.plot(self.lidar_data[0][0], self.lidar_data[0][1], 'r.')[0]
             self.canvas.show()
-            self.parent.set_status('GPS_READY')
         else:
             pass
 
-        :return:
-        """
-        # Turn off gps and map because the lidar cannot be overlaid at this time.
-        self.callback_gps_off()
-        self.callback_map_off()
-        if self.data_manager is None:
-            self.callback_initialize_data_manager()
-        if not 'lidar' in self.data_manager.data_dict.keys():
-            self.data_manager.setup_data_files('hokuyo')
-            pickled = True
-            delete_pickle = False
-            self.data_manager.load_lidar(4000, pickled, delete_pickle)
-            self.lidar_data = self.data_manager.data_dict['lidar']
-
-        self.lidar_plot = self.ax_lidar.plot(self.lidar_data[0][0], self.lidar_data[0][1], 'r.')[0]
-        self.canvas.show()
-        """
-        num_samples = len(self.lidar_data)
-        step_size = 40
-        print(range(0, num_samples, step_size))
-        pickled = True
-        delete_pickle = False
-        
-        self.parent.set_status('Hokuyo data loading...')
-        self.data_manager.load_lidar(num_samples, pickled, delete_pickle)
-        lidar = self.data_manager.data_dict['lidar']
-        self.parent.set_status('Plotting lidar')
-        x_lidar, y_lidar, t = threshold_lidar_pts(lidar[0])
-        self.lidar_plot = self.ax_lidar.plot(x_lidar, y_lidar, 'r')[0]
-        self.canvas.draw()
-        for i in range(int(num_samples / step_size), int(num_samples / step_size) * step_size, step_size):
-            lidar_i = lidar[i]
-            x_lidar, y_lidar, t = threshold_lidar_pts(lidar_i)
-            x_not_equal_time = str(x_lidar) != str(t)
-            # self.ax_lidar.clear() # clear before each plot
-            if x_not_equal_time:
-                # self.ax_lidar.clear()
-                self.lidar_plot.set_xdata(x_lidar.tolist())
-                self.lidar_plot.set_ydata(y_lidar.tolist())
-                self.canvas.draw()
-                # time.sleep(1)
-                plt.pause(1)
-                # hokuyo_plot(x_lidar, y_lidar, t, self.ax_lidar)
-                # plt.pause(1)
-                print('drawing lidar')
-                # self.canvas.draw()
-                #break
-                #plt.pause(1)
-        """
-
-
 
     def callback_lidar_off(self):
-        pass
+        if self.lidar_on:
+            self.lidar_on = False
+            self.ax_lidar.clear()
+            self.canvas.draw()
+        else:
+            pass
 
 
 class ToolbarFrame(tk.Frame):

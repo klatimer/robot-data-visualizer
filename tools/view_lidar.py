@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def hokuyo_plot(x_lidar, y_lidar, time, axis):
+def hokuyo_plot(axis):
     """
     Creates plot of xy lidar data with lidar
     range arc plotted in blue line.
@@ -27,9 +27,6 @@ def hokuyo_plot(x_lidar, y_lidar, time, axis):
     #time to wait between plots
     delay = 0.1
     #convert epoch time to datetime format
-    time = str(time)
-    time = int(time[:10])
-    time = datetime.datetime.fromtimestamp(time).strftime('%c')
 
     #plot inner arc
     axis.add_patch(Arc((center, center), diameter[0], diameter[0],
@@ -49,21 +46,6 @@ def hokuyo_plot(x_lidar, y_lidar, time, axis):
     line_start_y, line_end_y = -line_start_end[0], -line_start_end[1]
     # plot line 2
     axis.plot([line_start_x, line_end_x], [line_start_y, line_end_y], 'b')
-    # plot lidar points
-    axis.plot(x_lidar, y_lidar, '.')
-    # plot title of time in datetime format
-    #plt.title(time)
-    # label x axis
-    #plt.xlabel('Distance (meters)')
-    # set axis limits
-    # axes = plt.gca() # this makes a new window
-    # xlimits, ylimits = [-32, 32], [-32, 32]
-    # axes.set_xlim(xlimits)
-    # axes.set_ylim(ylimits)
-    # wait to close plot for 'delay' seconds
-    # plt.pause(delay)
-    # close plot
-    # plt.close()
 
 
 def threshold_lidar_pts(data_i):
