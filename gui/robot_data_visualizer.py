@@ -95,10 +95,13 @@ class VisualizerFrame(tk.Frame):
         """
         if self.data_manager is not None:
             os.chdir(self.data_manager.owd)
+            self.ax_gps.clear()
             self.ax_map.clear()
+            self.ax_lidar.clear()
             self.canvas.draw()
             self.gps_on = False
             self.map_on = False
+            self.lidar_on = False
         self.parent.set_status('DM_START', hold=True)
         self.data_manager = DataManager(date)
         self.data_manager.setup_data_files('sensor_data')
@@ -598,7 +601,8 @@ class MainWindow(tk.Tk):
                 self.status.after(self.STATUS_DELAY, lambda: self.status.config(text=self.status_text['READY']))
         else:
             self.status.config(text=str(status))
-
+            if not hold:
+                self.status.after(self.STATUS_DELAY, lambda: self.status.config(text=self.status_text['READY']))
 
 if __name__ == '__main__':
     app = MainWindow(None)
