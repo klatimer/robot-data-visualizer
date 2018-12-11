@@ -74,6 +74,11 @@ Option 2: Use virtual environment
 > source activate environment.yml
 ```
 
+To install the package, you can type:
+```bash
+> python setup.py install
+```
+
 ### Tests
 We are using Travis CI for continuous intergration testing. You can check out the current status 
 [here](https://travis-ci.org/klatimer/robot-data-visualizer).
