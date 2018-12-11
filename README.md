@@ -127,11 +127,7 @@ Then you can see a pretty GUI shows here:
 
 
 ## Documentation
-To generate the project's documentation, open up a terminal from the project root
-directory and type `cd doc`
-
-Then, to generate the documentation type:
-`make html` and open the `index.html` file in `_build/html`.
+Our project documentation is presented in this [website](https://wh1210.github.io/documentation/).
 
 ## License
 This project utilizes the [MIT LICENSE](LICENSE).
