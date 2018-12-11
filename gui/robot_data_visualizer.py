@@ -473,7 +473,7 @@ class MainWindow(tk.Tk):
         :type status: str.
         :param hold: When *hold=True*, the status update will not time out.
         :type hold: bool.
-        :return:
+        :return: None
         """
         if status in self.status_text.keys():
             self.status.config(text=self.status_text[status])

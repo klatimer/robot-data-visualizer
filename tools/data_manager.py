@@ -1,6 +1,3 @@
-''' This file contains a class DataManager used to as a manager to control the data
-    used in the future.'''
-
 import os
 import pickle
 from tools.data_loader import DataLoader
@@ -10,16 +7,11 @@ from tools.download_tar import download_tar
 
 
 class DataManager:
-    '''This class handles downloading, extracting and storing data to be used by the main application.
+    '''
+    This class handles downloading, extracting and storing data to be used by the main application.
     '''
 
     def __init__(self, date):
-        '''
-        Initialize all things needed to manager data.
-        :param date: The data of data user want choose.
-        '''
-        # self.owd = os.getcwd()
-        tmp = os.getcwd()
         self.owd = os.path.abspath('.')
         self.data_dir_name = 'data'
         self.base_name = 'http://robots.engin.umich.edu/nclt'
@@ -29,9 +21,11 @@ class DataManager:
 
     def setup_data_files(self, data_type):
         '''
-        Used to setup different kinds of data.
-        :param data_type: Different kinds of data
-        :return:
+        This function sets up data files by downloading and extracting them into the *data* directory.
+
+        :param data_type: Selects lidar or GPS data.
+        :type data_type: str.
+        :return: None
         '''
         filename = download_tar(self.base_name, self.date, data_type)
         tar_extract(filename)
@@ -39,28 +33,27 @@ class DataManager:
 
     def load_gps(self):
         '''
-        Load GPS data. Then load gps data into dictionary.
+        This function loads data into the data manager's data dictionary.
+
+        :return: None
         '''
-        # Loads a list of ordered (x,y) tuples into the 'gps' key of the data dictionary
         os.chdir(self.owd)
         gps_file_path = os.path.join(self.data_dir_name, os.path.join(self.date, 'gps.csv'))
         data_loader = DataLoader(gps_file_path)
         self.data_dict['gps'] = data_loader.get_gps_dictionary()
         self.data_dict['gps_range'] = data_loader.get_gps_range()
 
-    def load_lidar(self, num_samples, pickled = None, delete_pickle = None):
+    def load_lidar(self, num_samples, pickled=None, delete_pickle=None):
         '''
-        Load lidar data and choose the number of samples as user's choice.
+        This function loads lidar, with the option to use a pickled file.
 
-        Parameters
-        ----------
-        delete_pickle
-            If delete_pickle = 'delete', delete any existing pickle of lidar.
-        num_samples
-            The number of lidar samples to use.
-        pickled
-            If pickled = 'pickled', load from existing pickle of lidar if
-            it exists and save a pickle of lidar data.
+        :param num_samples: Number of samples to load
+        :type num_samples: int.
+        :param pickled: If *pickled='pickled'*, load from existing pickle of lidar, otherwise use existing
+            and save a pickle of the data.
+        :type pickled: str.
+        :param delete_pickle: If *delete_pickle='delete'*, delete any existing pickle of lidar.
+        :type delete_pickle: str.
         '''
         os.chdir(self.owd)
         lidar_file_path = os.path.join(self.data_dir_name,
@@ -82,15 +75,18 @@ class DataManager:
 
     def load_all(self):
         '''
-        load all gps and lidar data.
+        This function loads both the GPS and lidar data.
+
+        :return: None
         '''
         self.load_gps()
         self.load_lidar(100)    # Note this could take a while - loads a lot of samples
 
     def get_data(self, key=None):
         '''
-        Get data after load.
-        :return: Chosen data in the dictionary.
+        This function gets data from the data manager's data dictionary.
+
+        :return: value of data at *key*
         '''
         if key is None:
             return self.data_dict
