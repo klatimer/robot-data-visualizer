@@ -6,14 +6,12 @@ sys.path.append('..')
 import warnings
 warnings.filterwarnings("ignore")
 
-import time
 from datetime import datetime
 
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.lines as lines
 import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
@@ -150,7 +148,8 @@ class VisualizerFrame(tk.Frame):
 
     def callback_gps_slider_changed(self, event):
         """
-        This callback responds to the *Off* button under the *GPS Control* menu.
+        This callback responds to the scale position changing under the *GPS Control* menu.
+
         :return: None
         """
         self.gps_on = True
@@ -162,6 +161,7 @@ class VisualizerFrame(tk.Frame):
     def update_gps(self, idx):
         """
         This function updates the GPS data that is displayed in the main viewing window.
+
         :param idx: Index into the array of GPS data that is to be displayed.
         :type idx: int.
         :return: None
@@ -278,6 +278,11 @@ class VisualizerFrame(tk.Frame):
         return map_scale # units of meters per pixel
 
     def callback_lidar_slider_changed(self, event):
+        """
+        This callback responds to the scale position changing under the *Lidar Control* menu.
+
+        :return: None
+        """
         self.lidar_on = True
         idx = self.get_idx_for_lidar_update()
         self.update_lidar(idx)
@@ -295,6 +300,13 @@ class VisualizerFrame(tk.Frame):
         return max(int(slider_val * idx_ratio) - 1, 0)
 
     def update_lidar(self, idx):
+        """
+        This function updates the Lidar data that is displayed in the main viewing window.
+
+        :param idx: Index into the array of Lidar data that is to be displayed.
+        :type idx: int.
+        :return: None
+        """
         if self.lidar_data is not None:
             yt, xt, _ = threshold_lidar_pts(self.lidar_data[idx])
             self.lidar_plot.set_xdata(xt)
@@ -304,7 +316,11 @@ class VisualizerFrame(tk.Frame):
             pass
 
     def callback_lidar_on(self):
-        # Turn off gps and map because the lidar cannot be overlaid at this time.
+        """
+        This callback responds to the *On* button under the *Lidar Control* menu.
+
+        :return: None
+        """
         if not self.lidar_on:
             self.lidar_on = True
             self.callback_map_off()
@@ -330,6 +346,11 @@ class VisualizerFrame(tk.Frame):
 
 
     def callback_lidar_off(self):
+        """
+        This callback responds to the *Off* button under the *Lidar Control* menu.
+
+        :return: None
+        """
         if self.lidar_on:
             self.lidar_on = False
             self.ax_lidar.clear()

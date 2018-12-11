@@ -5,23 +5,23 @@ Welcome to our GitHub repository!
 
 This is our package's [PyPI website](https://pypi.org/project/robot-data-visualizer/).
 
+## Overview
+
 This project was started with the intention of providing an easy tool for
 visualizing robotics data. Currently, only the University of Michigan's
 NCLT data set is used, which can be found here: http://robots.engin.umich.edu/nclt/
 
-![alt text](./img/rdv_gps_map.png)
-
 ## Structure
     robot-data-visualizer/
       |- README.md
-      |- gui
+      |- gui/
          |- robot_data_visualizer.py
-      |- test
+      |- test/
          |- run_test.py
          |- test_data_loader.py
          |- test_data_manager.py
          |- ...
-      |- misc
+      |- misc/
          |- iterative_closest_point.py
          |- static_map_example.py
          |- try_data_manager.py
@@ -70,7 +70,7 @@ The official distribution is on GitHub, and you can clone the repository using:
 ```
 Then you need to go to the project's root directory by typing `cd robot-data-visualizer`.
 
-### Setup dependencies
+#### Setup dependencies
 To install all the dependencies, you have two options.
 
 Option 1: Use pip to install all dependencies.
@@ -89,16 +89,14 @@ To install the package, you can type:
 ```
 
 ### Tests
-We are using Travis CI for continuous intergration testing. You can check out the current status 
-[here](https://travis-ci.org/klatimer/robot-data-visualizer).
+Tests can be run manually from the project root directory by typing:
+```bash
+> python test/run_tests.py
+``` 
+We are using Travis CI to run these tests after every commit. You can check out the current status 
+[here](https://travis-ci.org/klatimer/robot-data-visualizer) or see the status in the badge at the top of this README.
 
-## Overview
-
-This project focus on building a tool to make it more convenient for 
-Robotic researcher to visualize their complex robot data, 
-without wasting to much time in process data and see how it goes.
-
-In general, the data is composed by two kinds of data: GPS data and LIDAR data.
+## Tutorial
 
 
 ### To visualize GPS data:
@@ -110,27 +108,27 @@ First type `cd gui` at root directory of this project to go to gui directory, th
 ```
 
 Then you can see a graphic user interface here:
-* @ken Put A newest GUI here without any operation.
+
 
 To use this GUI, you can follow the instructions here:
 * Choose date of the data set then press the `Load Data` button in the toolbar.
 * Wait for the data to be loaded. This may take a minute on the first try.
 * Press `On` or `Off` button in GPS Control to show or remove that path. Also you can drag the slider to see gps path at different points in time.
 * Press `On` or `Off` button in Map Control to show or remove the static map overlay.
+* Press `On` or `Off` button in Lidar Control to switch to or from the lidar viewing mode. Note
+that this may take a minute on the first try because lidar data is loaded once the `On` button
+is pressed.
 
-Then you can see a pretty GUI shows here:
-* @ken, put a complete photo of GUI here.
+GPS Control `On` and Map Control `On`:
+![alt text](./img/rdv_gps_map.png)
 
-
-### To visualize LIDAR data:
+Lidar Control `On`:
 ![alt text](./img/rdv_lidar.png)
 
-
 ## Documentation
-Our project documentation is presented in this [website](https://wh1210.github.io/documentation/).
+Our project documentation can be found [here](https://wh1210.github.io/documentation/).
 
 ## License
 This project utilizes the [MIT LICENSE](LICENSE).
-100% open-source, feel free to utilize the code however you like. 
 
 
