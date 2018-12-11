@@ -94,6 +94,7 @@ class VisualizerFrame(tk.Frame):
         :return: None
         """
         if self.data_manager is not None:
+            os.chdir(self.data_manager.owd)
             self.ax_map.clear()
             self.canvas.draw()
             self.gps_on = False
@@ -103,6 +104,7 @@ class VisualizerFrame(tk.Frame):
         self.data_manager.setup_data_files('sensor_data')
         self.data_manager.load_gps()
         x_coords, y_coords = map_for_gps(self.data_manager.data_dict, self.data_manager.data_dir)
+        self.lidar_data = None
         self.gps_data = [x_coords, y_coords] # in image coords
         self.map_image = mpimg.imread(os.path.join(self.data_manager.data_dir, 'map.png'))
         self.label.config(text='Viewer')
@@ -301,17 +303,20 @@ class VisualizerFrame(tk.Frame):
         # Turn off gps and map because the lidar cannot be overlaid at this time.
         if not self.lidar_on:
             self.lidar_on = True
-            self.callback_gps_off()
             self.callback_map_off()
+            self.callback_gps_off()
             if self.data_manager is None:
                 self.callback_initialize_data_manager()
             if not 'lidar' in self.data_manager.data_dict.keys():
                 self.data_manager.setup_data_files('hokuyo')
                 pickled = True
                 delete_pickle = False
-                self.data_manager.load_lidar(4000, pickled, delete_pickle)
+                self.data_manager.load_lidar(4000, pickled, delete_pickle) # TODO - global constant for lidar samples
                 self.lidar_data = self.data_manager.data_dict['lidar']
 
+            xlimits, ylimits = [-32, 32], [-32, 32]
+            self.ax_lidar.set_xlim(xlimits)
+            self.ax_lidar.set_ylim(ylimits)
             hokuyo_plot(self.ax_lidar)
             self.lidar_plot = self.ax_lidar.plot(self.lidar_data[0][0], self.lidar_data[0][1], 'r.')[0]
             self.canvas.show()
