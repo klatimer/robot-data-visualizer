@@ -296,8 +296,9 @@ class VisualizerFrame(tk.Frame):
 
     def update_lidar(self, idx):
         if self.lidar_data is not None:
-            self.lidar_plot.set_xdata(self.lidar_data[idx][0])
-            self.lidar_plot.set_ydata(self.lidar_data[idx][1])
+            xt, yt, _ = threshold_lidar_pts(self.lidar_data[idx])
+            self.lidar_plot.set_xdata(xt)
+            self.lidar_plot.set_ydata(yt)
             self.canvas.draw()
         else:
             pass
@@ -321,7 +322,8 @@ class VisualizerFrame(tk.Frame):
             self.ax_lidar.set_xlim(xlimits)
             self.ax_lidar.set_ylim(ylimits)
             hokuyo_plot(self.ax_lidar)
-            self.lidar_plot = self.ax_lidar.plot(self.lidar_data[0][0], self.lidar_data[0][1], 'r.')[0]
+            xt, yt, _ = threshold_lidar_pts(self.lidar_data[0])
+            self.lidar_plot = self.ax_lidar.plot(xt, yt, 'r.')[0]
             self.canvas.show()
         else:
             pass
