@@ -6,12 +6,14 @@ sys.path.append('..')
 import warnings
 warnings.filterwarnings("ignore")
 
+import time
 from datetime import datetime
 
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.lines as lines
 import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
@@ -20,6 +22,8 @@ import tkinter as tk
 from tools.get_dates_umich import get_dates_umich
 from tools.staticmap_for_gps import map_for_gps
 from tools.data_manager import DataManager
+from tools.view_lidar import hokuyo_plot
+from tools.view_lidar import threshold_lidar_pts
 
 
 class VisualizerFrame(tk.Frame):
@@ -33,14 +37,17 @@ class VisualizerFrame(tk.Frame):
         self.label = None
         self.ax_map = None
         self.ax_gps = None
+        self.ax_lidar = None
         self.map_plot = None
         self.gps_plot = None
-        self.gps_on = False
+        self.lidar_plot = None
         self.canvas = None
         self.data_manager = None
         self.gps_data = None
+        self.lidar_data = None
         self.gps_on = False
         self.map_on = False
+        self.lidar_on = False
         self.map_image = None
         self.widgets()
 
@@ -56,6 +63,7 @@ class VisualizerFrame(tk.Frame):
         self.fig = Figure(figsize=(5, 4), dpi=100)
         self.ax_map = self.fig.add_subplot(111)
         self.ax_gps = self.fig.add_subplot(111)
+        self.ax_lidar = self.fig.add_subplot(111)
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
         self.canvas.draw()
@@ -79,7 +87,7 @@ class VisualizerFrame(tk.Frame):
 
     def setup_data(self, date):
         """
-        This function sets up all of the data needed by the application.
+        This function sets up all of the data (except lidar) needed by the application.
 
         :param date: Determines which date from the robotics dataset to use.
         :type date: str.
@@ -176,7 +184,7 @@ class VisualizerFrame(tk.Frame):
         :return: int -- the index to be used for the GPS update
         """
         slider_val = self.parent.control.gps_control.selection_scale.get()
-        idx_ratio = len(self.gps_data[0]) / 100
+        idx_ratio = len(self.gps_data) / 100
         return int(slider_val * idx_ratio)
 
     def get_timestamp_for_gps_update(self, gps_data_idx):
@@ -259,6 +267,99 @@ class VisualizerFrame(tk.Frame):
         map_scale = d_lat_range * k / d_x_pixels
         return map_scale # units of meters per pixel
 
+    def callback_lidar_slider_changed(self, event):
+        self.lidar_on = True
+        idx = self.get_idx_for_lidar_update()
+        self.update_lidar(idx)
+        # self.update_timestamp(idx)
+        self.parent.set_status('Lidar updated')
+
+    def get_idx_for_lidar_update(self):
+        """
+        This function returns the index to be used for updating the Lidar data.
+
+        :return: int -- the index to be used for the Lidar update
+        """
+        slider_val = self.parent.control.lidar_control.selection_scale.get()
+        idx_ratio = len(self.lidar_data) / 100
+        return max(int(slider_val * idx_ratio), 0)
+
+    def update_lidar(self, idx):
+        if self.lidar_data is not None:
+            self.lidar_plot.set_xdata(self.lidar_data[idx][0])
+            self.lidar_plot.set_ydata(self.lidar_data[idx][1])
+            self.canvas.draw()
+        else:
+            pass
+
+    def callback_lidar_on(self):
+        """
+            if not self.gps_on:
+            self.gps_on = True
+            self.parent.set_status('GPS_START')
+            idx = self.get_idx_for_gps_update()
+            self.update_timestamp(idx)
+            self.gps_plot = self.ax_gps.plot(self.gps_data[0][:idx], self.gps_data[1][:idx], 'r')[0]
+            self.canvas.show()
+            self.parent.set_status('GPS_READY')
+        else:
+            pass
+
+        :return:
+        """
+        # Turn off gps and map because the lidar cannot be overlaid at this time.
+        self.callback_gps_off()
+        self.callback_map_off()
+        if self.data_manager is None:
+            self.callback_initialize_data_manager()
+        if not 'lidar' in self.data_manager.data_dict.keys():
+            self.data_manager.setup_data_files('hokuyo')
+            pickled = True
+            delete_pickle = False
+            self.data_manager.load_lidar(4000, pickled, delete_pickle)
+            self.lidar_data = self.data_manager.data_dict['lidar']
+
+        self.lidar_plot = self.ax_lidar.plot(self.lidar_data[0][0], self.lidar_data[0][1], 'r.')[0]
+        self.canvas.show()
+        """
+        num_samples = len(self.lidar_data)
+        step_size = 40
+        print(range(0, num_samples, step_size))
+        pickled = True
+        delete_pickle = False
+        
+        self.parent.set_status('Hokuyo data loading...')
+        self.data_manager.load_lidar(num_samples, pickled, delete_pickle)
+        lidar = self.data_manager.data_dict['lidar']
+        self.parent.set_status('Plotting lidar')
+        x_lidar, y_lidar, t = threshold_lidar_pts(lidar[0])
+        self.lidar_plot = self.ax_lidar.plot(x_lidar, y_lidar, 'r')[0]
+        self.canvas.draw()
+        for i in range(int(num_samples / step_size), int(num_samples / step_size) * step_size, step_size):
+            lidar_i = lidar[i]
+            x_lidar, y_lidar, t = threshold_lidar_pts(lidar_i)
+            x_not_equal_time = str(x_lidar) != str(t)
+            # self.ax_lidar.clear() # clear before each plot
+            if x_not_equal_time:
+                # self.ax_lidar.clear()
+                self.lidar_plot.set_xdata(x_lidar.tolist())
+                self.lidar_plot.set_ydata(y_lidar.tolist())
+                self.canvas.draw()
+                # time.sleep(1)
+                plt.pause(1)
+                # hokuyo_plot(x_lidar, y_lidar, t, self.ax_lidar)
+                # plt.pause(1)
+                print('drawing lidar')
+                # self.canvas.draw()
+                #break
+                #plt.pause(1)
+        """
+
+
+
+    def callback_lidar_off(self):
+        pass
+
 
 class ToolbarFrame(tk.Frame):
     """
@@ -312,6 +413,7 @@ class ControlFrame(tk.Frame):
         self.root = parent
         self.slam_control = None
         self.map_control = None
+        self.lidar_control = None
         self.widgets()
 
     class GpsControlFrame(tk.Frame):
@@ -390,6 +492,46 @@ class ControlFrame(tk.Frame):
             self.on_button.config(command=self.root.window.callback_map_on)
             self.off_button.config(command=self.root.window.callback_map_off)
 
+    class LidarControlFrame(tk.Frame):
+
+        def __init__(self, parent, root):
+            tk.Frame.__init__(self, parent, width=400)
+            self.parent = parent
+            self.root = root
+            self.scale_val = None
+            self.on_button = None
+            self.off_button = None
+            self.widgets()
+
+        def widgets(self):
+            """
+            Set up widgets for the frame.
+
+            :return: None
+            """
+            label = tk.Label(self, text="Lidar Control", bg="blue", fg="white")
+            label.pack(side=tk.TOP, fill=tk.X)
+
+            self.selection_scale = tk.Scale(self, orient=tk.HORIZONTAL, to=100, variable=self.scale_val)
+            self.selection_scale.set(100)
+            self.selection_scale.pack(side=tk.TOP)
+
+            self.on_button = tk.Button(self, text="On", bg="green", fg="white")
+            self.on_button.pack(side=tk.LEFT)
+
+            self.off_button = tk.Button(self, text="Off", bg="red", fg="white")
+            self.off_button.pack(side=tk.RIGHT)
+
+        def bind_widgets(self):
+            """
+            Bind widgets to their callback functions.
+
+            :return: None
+            """
+            self.on_button.config(command=self.root.window.callback_lidar_on)
+            self.off_button.config(command=self.root.window.callback_lidar_off)
+            self.selection_scale.bind("<ButtonRelease-1>", self.root.window.callback_lidar_slider_changed)
+
     def widgets(self):
         """
         Set up widgets for the frame.
@@ -400,6 +542,8 @@ class ControlFrame(tk.Frame):
         self.gps_control.pack(fill=tk.X)
         self.map_control = self.MapControlFrame(self, self.root)
         self.map_control.pack(fill=tk.X)
+        self.lidar_control = self.LidarControlFrame(self, self.root)
+        self.lidar_control.pack(fill=tk.X)
 
     def bind_widgets(self):
         """
@@ -409,6 +553,7 @@ class ControlFrame(tk.Frame):
         """
         self.gps_control.bind_widgets()
         self.map_control.bind_widgets()
+        self.lidar_control.bind_widgets()
 
 
 class MainWindow(tk.Tk):
