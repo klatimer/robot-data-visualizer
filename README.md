@@ -3,6 +3,8 @@
 # Robot Data Visualizer
 Welcome to our GitHub repository!
 
+This is our package's [PyPI website](https://pypi.org/project/robot-data-visualizer/).
+
 This project was started with the intention of providing an easy tool for
 visualizing robotics data. Currently, only the University of Michigan's
 NCLT data set is used, which can be found here: http://robots.engin.umich.edu/nclt/
@@ -53,6 +55,13 @@ NCLT data set is used, which can be found here: http://robots.engin.umich.edu/nc
       |- environment.yml
 
 ## Getting Started
+
+### Installing from PyPI
+You can type following to install directly.
+```bash
+> pip install robot-data-visualizer
+```
+
 ### Installing from source
 
 The official distribution is on GitHub, and you can clone the repository using:
