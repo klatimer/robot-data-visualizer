@@ -28,15 +28,15 @@ def hokuyo_plot(x_lidar, y_lidar, time):
     del fig
     #plot inner arc
     axes.add_patch(Arc((center, center), diameter[0], diameter[0],
-                       theta1=-45, theta2=225, edgecolor='b', linewidth=1.5))
+                       theta1=-135, theta2=135, edgecolor='b', linewidth=1.5))
     #plot outer arc
     axes.add_patch(Arc((center, center), diameter[1], diameter[1],
-                       theta1=-45, theta2=225, edgecolor='b', linewidth=1.5))
+                       theta1=-135, theta2=135, edgecolor='b', linewidth=1.5))
     # start and end points for lidar boundary lines
     line_start_end = [0.8, 21.21]
     # x & y coordinates for line 1
-    line_start_x, line_end_x = line_start_end[0], line_start_end[1]
-    line_start_y, line_end_y = -line_start_end[0], -line_start_end[1]
+    line_start_x, line_end_x = -line_start_end[0], -line_start_end[1]
+    line_start_y, line_end_y = line_start_end[0], line_start_end[1]
     # plot line 1
     plt.plot([line_start_x, line_end_x], [line_start_y, line_end_y], 'b')
     # x & y coordinates for line 2
