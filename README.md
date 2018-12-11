@@ -9,7 +9,7 @@ This project was started with the intention of providing an easy tool for
 visualizing robotics data. Currently, only the University of Michigan's
 NCLT data set is used, which can be found here: http://robots.engin.umich.edu/nclt/
 
-* PRETTY PICTURE HERE (get people excited to run this thing)
+![alt text](./img/rdv_gps_map.png)
 
 ## Structure
     robot-data-visualizer/
@@ -106,24 +106,24 @@ In general, the data is composed by two kinds of data: GPS data and LIDAR data.
 
 First type `cd gui` at root directory of this project to go to gui directory, then type
 ```bash
-> python robot_data_visualizer
+> python robot_data_visualizer.py
 ```
 
 Then you can see a graphic user interface here:
 * @ken Put A newest GUI here without any operation.
 
 To use this GUI, you can follow the instructions here:
-* Choose date of data then press `Load Data` button at top-left.
-* Wait for all data has been loaded successfully.
-* Press `On` or `Off` button of GPS Control to show gps path or not. Also you can drag the slider to see gps path in different completion.
-* Press `On` or `Off` button of Map Control to show the overlay map or not.
+* Choose date of the data set then press the `Load Data` button in the toolbar.
+* Wait for the data to be loaded. This may take a minute on the first try.
+* Press `On` or `Off` button in GPS Control to show or remove that path. Also you can drag the slider to see gps path at different points in time.
+* Press `On` or `Off` button in Map Control to show or remove the static map overlay.
 
 Then you can see a pretty GUI shows here:
 * @ken, put a complete photo of GUI here.
 
 
 ### To visualize LIDAR data:
-* @ken Optional if LIDAR can be integrated greatly.
+![alt text](./img/rdv_lidar.png)
 
 
 ## Documentation
