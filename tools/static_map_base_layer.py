@@ -27,7 +27,7 @@ class StaticMapBaseLayer(StaticMap):
         :type zoom: int
         :rtype: float
         """
-        if not (-HALF_DEGREE <= lon <= HALF_DEGREE):
+        if not -HALF_DEGREE <= lon <= HALF_DEGREE:
             lon = (lon + HALF_DEGREE) % FULL_DEGREE - HALF_DEGREE
 
         return ((lon + HALF_DEGREE) / FULL_DEGREE) * pow(2, zoom)
@@ -40,7 +40,7 @@ class StaticMapBaseLayer(StaticMap):
         :type zoom: int
         :rtype: float
         """
-        if not (-RECT <= lat <= RECT):
+        if not -RECT <= lat <= RECT:
             lat = (lat + RECT) % HALF_DEGREE - RECT
 
         return (1 - log(tan(lat * pi / HALF_DEGREE) + 1 / cos(lat * pi / HALF_DEGREE)) / pi) \

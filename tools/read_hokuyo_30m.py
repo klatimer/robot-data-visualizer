@@ -17,10 +17,9 @@ def convert(x_s):
     scaling = 0.005 # 5 mm
     offset = -100.0
 
-    x = x_s * scaling + offset
+    x_converted = x_s * scaling + offset
 
-    return x
-
+    return x_converted
 def read_hokuyo(filename, max_samples=1000000):
     """
     This function reads the hokuyo data from a binary file.
@@ -34,7 +33,7 @@ def read_hokuyo(filename, max_samples=1000000):
 
     # List of tuples (x, y, timestamp) to return
     # x and y are lists of values
-    data = []
+    data_x_y_time = []
 
     # hokuyo_30m always has 1081 hits
     num_hits = 1081
@@ -51,26 +50,24 @@ def read_hokuyo(filename, max_samples=1000000):
         j = 0
         while j < max_samples:
             # Read timestamp
-            buf = f_bin.read(8)
-            if len(buf) is 8:
+            expected_length = 8
+            buf = f_bin.read(expected_length)
+            if len(buf) is expected_length:
                 utime = struct.unpack('<Q', buf)[0]
-                r = np.zeros(num_hits)
+                radius = np.zeros(num_hits)
                 for i in range(num_hits):
-                    s = struct.unpack('<H', f_bin.read(2))[0]
-                    r[i] = convert(s)
+                    s_struct = struct.unpack('<H', f_bin.read(2))[0]
+                    radius[i] = convert(s_struct)
             else:
                 break
 
-            x = r * np.cos(angles)
-            y = r * np.sin(angles)
+            x_coord = radius * np.cos(angles)
+            y_coord = radius * np.sin(angles)
 
             # Append tuple of positions and timestamp
-            data.append((x, y, utime))
+            data_x_y_time.append((x_coord, y_coord, utime))
             j = j + 1
     finally:
         f_bin.close()
 
-    return data
-
-if __name__ == '__main__':
-    data = read_hokuyo('../data/2013-01-10/hokuyo_30m.bin', 100)
+    return data_x_y_time

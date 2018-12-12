@@ -1,6 +1,6 @@
-# code referenced from: https://stackoverflow.com/a/30888321
+"""This module extracts .tar and .tar.gz files.
 
-
+code referenced from: https://stackoverflow.com/a/30888321"""
 def tar_extract(file_name):
     """
     This function extracts a compressed .tar or .tar.gz file.

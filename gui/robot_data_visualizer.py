@@ -409,7 +409,6 @@ class ControlFrame(tk.Frame):
         tk.Frame.__init__(self, parent, width=400)
         self.parent = parent
         self.root = parent
-        self.slam_control = None
         self.map_control = None
         self.lidar_control = None
         self.widgets()

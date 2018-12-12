@@ -1,8 +1,9 @@
 """
 This class is responsible for precessing data correctly corresponding to the user's choice.
 """
-import numpy as np
 import os
+import numpy as np
+
 # __all__=['DataLoader']
 DEGREE = 180
 

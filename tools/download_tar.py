@@ -8,7 +8,7 @@ code referenced from: http://blog.ppkt.eu/2014/06/python-urllib-and-tarfile/
 import os
 import urllib.request
 os.chdir('..')
-owd = os.getcwd() # original working directory
+orig_working_dir = os.getcwd() # original working directory
 data_dir = None
 
 
@@ -18,12 +18,12 @@ def ensure_data_dir_exists():
 
     :return: None
     """
-    global owd, data_dir
-    p = owd
-    p = os.path.join(p, 'data')
-    if not os.path.exists(p):
-        os.mkdir(p)
-    data_dir = p
+    global orig_working_dir, data_dir
+    path = orig_working_dir
+    path = os.path.join(path, 'data')
+    if not os.path.exists(path):
+        os.mkdir(path)
+    data_dir = path
 
 
 def download_tar(base_name, date, data_type):
@@ -41,13 +41,14 @@ def download_tar(base_name, date, data_type):
     ensure_data_dir_exists()
     global data_dir
     os.chdir(data_dir)
-    if data_type is 'sensor_data': # miscellaneous sensors, incl. GPS
+    sensor_data_str = 'sensor_data'
+    hokuyo_str = 'hokuyo'
+    if data_type is sensor_data_str: # miscellaneous sensors, incl. GPS
         tmp = '%s/sensor_data/' % base_name
         fname = '%s_sen.tar.gz' % date
-    elif data_type is 'hokuyo': # hokuyo lidar scanner
+    elif data_type is hokuyo_str: # hokuyo lidar scanner
         tmp = '%s/hokuyo_data/' % base_name
         fname = '%s_hokuyo.tar.gz' % date
-    # TODO throw exception for invalid data_type
     url = tmp + fname
     path = os.path.join(data_dir, fname)
     if not os.path.exists(path):

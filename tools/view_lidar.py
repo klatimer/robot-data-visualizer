@@ -1,8 +1,6 @@
 """lidar_viewer visualizes lidar data by ploting it in matplotlib window."""
 
-import datetime
 from matplotlib.patches import Arc
-import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -24,8 +22,6 @@ def hokuyo_plot(axis):
     diameter = [2, 60]
     #arc center
     center = 0
-    #time to wait between plots
-    delay = 0.1
     #convert epoch time to datetime format
 
     #plot inner arc
@@ -48,7 +44,6 @@ def hokuyo_plot(axis):
     axis.plot([line_start_x, line_end_x], [line_start_y, line_end_y], 'b')
 
 
-import numpy as np
 
 def threshold_lidar_pts(data_i):
     """

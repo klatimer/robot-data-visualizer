@@ -8,10 +8,17 @@ from tools.download_tar import download_tar
 
 class DataManager:
     '''
-    This class handles downloading, extracting and storing data to be used by the main application.
+    This class handles downloading, extracting and
+    storing data to be used by the main application.
     '''
 
     def __init__(self, date):
+        """
+        This function initializes the data_manager.
+        UMICH directory: http://robots.engin.umich.edu/nclt/
+        date example: 2013-1-10
+        :param date: string date from UMICH data directory:
+        """
         self.owd = os.path.abspath('.')
         self.data_dir_name = 'data'
         self.base_name = 'http://robots.engin.umich.edu/nclt'
@@ -21,7 +28,8 @@ class DataManager:
 
     def setup_data_files(self, data_type):
         '''
-        This function sets up data files by downloading and extracting them into the *data* directory.
+        This function sets up data files by downloading
+        and extracting them into the *data* directory.
 
         :param data_type: Selects lidar or GPS data.
         :type data_type: str.
