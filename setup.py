@@ -2,12 +2,10 @@
 from setuptools import setup, find_packages
 
 PACKAGES = find_packages()
-PACKAGES.append('gui')
-PACKAGES.append('misc')
 
 setup(
 	name = "robot-data-visualizer",
-	version = "0.3",
+	version = "0.4",
 	url='https://github.com/klatimer/robot-data-visualizer',
 	license='MIT',
 	packages=PACKAGES,
