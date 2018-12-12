@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-import sys
-sys.path.append('..')
-from robot_data_visualizer import DataManager
+# import sys
+# sys.path.append('..')
+from robot_data_visualizer.data_manager import DataManager
 
 class BasicTest(unittest.TestCase):
     def setUp(self):
