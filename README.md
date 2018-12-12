@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/klatimer/robot-data-visualizer.svg?branch=dev)](https://travis-ci.org/klatimer/robot-data-visualizer)
+[![Documentation Status](https://readthedocs.org/projects/robot-data-visualizer/badge/?version=latest)](https://robot-data-visualizer.readthedocs.io/en/latest/?badge=latest)
 
 # Robot Data Visualizer
 Welcome to our GitHub repository!
