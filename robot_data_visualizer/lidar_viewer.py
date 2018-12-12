@@ -1,12 +1,9 @@
 """lidar_viewer visualizes lidar data by ploting it in matplotlib window."""
+from .data_manager import DataManager
+from .time_convert import epoch_to_date_time
+from .plot_lidar import hokuyo_plot
+from .threshold_lidar import threshold_lidar_pts
 
-import sys
-
-from tools.data_manager import DataManager
-from time_convert import epoch_to_date_time
-from plot_lidar import hokuyo_plot
-from threshold_lidar import threshold_lidar_pts
-sys.path.append('..')
 def lidar_viewer(date, num_samples, step_size=40, pickled=False, delete_pickle=False):
     """
     lidar_viewer visualizes lidar data by ploting it in matplotlib window.

@@ -2,8 +2,8 @@ import unittest
 import sys
 
 import os
-sys.path.append('..')
-from tools.data_manager import DataManager
+# sys.path.append('..')
+from robot_data_visualizer import DataManager
 
 class TestDataManager(unittest.TestCase):
 
