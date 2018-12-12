@@ -2,8 +2,8 @@
 
 import os
 from staticmap import Line
-from .static_map_base_layer import StaticMapBaseLayer
-from .data_manager import DataManager
+from robot_data_visualizer.static_map_base_layer import StaticMapBaseLayer
+from robot_data_visualizer.data_manager import DataManager
 
 def generate_coordinates(data_dict):
     '''

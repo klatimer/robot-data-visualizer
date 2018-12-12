@@ -1,9 +1,9 @@
 import os
 import pickle
-from .data_loader import DataLoader
-from .read_hokuyo_30m import read_hokuyo
-from .tar_extract import tar_extract
-from .download_tar import download_tar
+from robot_data_visualizer.data_loader import DataLoader
+from robot_data_visualizer.read_hokuyo_30m import read_hokuyo
+from robot_data_visualizer.tar_extract import tar_extract
+from robot_data_visualizer.download_tar import download_tar
 
 
 class DataManager:
