@@ -4,13 +4,13 @@ python:
   - '3.5'
 cache: pip
 before_install:
-  - chmod +x robot-data-visualizer/test/run_tests.py
-  - chmod +x robot-data-visualizer/test/test_data_loader.py
-  - chmod +x robot-data-visualizer/test/test_data_manager.py
+  - chmod +x robot-data-visualizer/tools/test/run_tests.py
+  - chmod +x robot-data-visualizer/tools/test/test_data_loader.py
+  - chmod +x robot-data-visualizer/tools/test/test_data_manager.py
 install:
   - pip install -r requirements.txt
 script:
-  - python robot-data-visualizer/test/run_tests.py
+  - python robot-data-visualizer/tools/test/run_tests.py
 branches:
   only:
     - master
