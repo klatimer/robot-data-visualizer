@@ -4,8 +4,8 @@ The tools module reference
 Data Manager
 ------------
 .. automodule:: tools.data_manager
-    :members: DataManager
-
+    :members:
+    
 Data Loader
 -----------
 .. automodule:: tools.data_loader
