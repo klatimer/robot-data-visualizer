@@ -7,9 +7,9 @@ import os
 import sys
 sys.path.append('..')
 
-from tools.data_manager import DataManager
-from tools.static_map_base_layer import StaticMapBaseLayer
-from tools.staticmap_for_gps import generate_coordinates
+from robot_data_visualizer.data_manager import DataManager
+from robot_data_visualizer.static_map_base_layer import StaticMapBaseLayer
+from robot_data_visualizer.staticmap_for_gps import generate_coordinates
 
 def plot_gps_on_map():
     '''

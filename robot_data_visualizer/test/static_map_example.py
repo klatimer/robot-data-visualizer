@@ -2,7 +2,7 @@
 A smoke test to use staticmap to generate northseatte.png without line features.
 '''
 from staticmap import Line
-from ..static_map_base_layer import StaticMap
+from robot_data_visualizer.static_map_base_layer import StaticMap
 
 m = StaticMap(600, 600, 80)
 

@@ -1,6 +1,7 @@
 import sys
+sys.path.append('..')
 import unittest
-from time_convert import epoch_to_date_time
+from robot_data_visualizer.time_convert import epoch_to_date_time
 
 class BasicTest(unittest.TestCase):
     """setup for unittests."""

@@ -1,5 +1,7 @@
 import unittest
 import numpy as np
+import sys
+sys.path.append('..')
 from robot_data_visualizer import DataManager
 
 class BasicTest(unittest.TestCase):

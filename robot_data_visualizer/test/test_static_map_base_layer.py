@@ -5,7 +5,7 @@ import sys
 sys.path.append('..')
 
 from staticmap import Line
-from tools.static_map_base_layer import StaticMapBaseLayer
+from robot_data_visualizer.static_map_base_layer import StaticMapBaseLayer
 
 m = StaticMapBaseLayer(600, 600, 80)
 
