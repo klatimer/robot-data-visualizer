@@ -1,10 +1,5 @@
-[![Build Status](https://travis-ci.org/klatimer/robot-data-visualizer.svg?branch=dev)](https://travis-ci.org/klatimer/robot-data-visualizer)
-[![Documentation Status](https://readthedocs.org/projects/robot-data-visualizer/badge/?version=latest)](https://robot-data-visualizer.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://travis-ci.org/klatimer/robot-data-visualizer.svg?branch=master)](https://travis-ci.org/klatimer/robot-data-visualizer)
 
-# Robot Data Visualizer
-Welcome to our GitHub repository!
-
-This is our package's [PyPI website](https://pypi.org/project/robot-data-visualizer/).
 
 ## Overview
 
@@ -44,12 +39,6 @@ NCLT data set is used, which can be found here: http://robots.engin.umich.edu/nc
       |- environment.yml
 
 ## Getting Started
-
-### Installing from PyPI
-You can type following to install directly.
-```bash
-> pip install robot-data-visualizer
-```
 
 ### Installing from source
 
