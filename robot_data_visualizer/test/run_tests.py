@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-test_modules = ["test_data_loader", "test_data_manager"]
+test_modules = ["test_data_loader", "test_data_manager", "test_download_tar", "test_get_dates_umich", "test_tar_extract", "test_time_convert", "test_threshold_lidar"]
 
 suite = unittest.TestSuite()
 
