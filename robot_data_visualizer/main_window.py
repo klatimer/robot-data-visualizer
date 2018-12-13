@@ -1,4 +1,8 @@
 import os
+import sys
+#sys.path.append('.')
+#sys.path.append('..')
+#sys.path.append('../..')
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -14,11 +18,11 @@ from matplotlib.figure import Figure
 
 import tkinter as tk
 
-from robot_data_visualizer.get_dates_umich import get_dates_umich
-from robot_data_visualizer.staticmap_for_gps import map_for_gps
-from robot_data_visualizer.data_manager import DataManager
-from robot_data_visualizer.view_lidar import hokuyo_plot
-from robot_data_visualizer.view_lidar import threshold_lidar_pts
+from get_dates_umich import get_dates_umich
+from staticmap_for_gps import map_for_gps
+from data_manager import DataManager
+from view_lidar import hokuyo_plot
+from view_lidar import threshold_lidar_pts
 
 
 class VisualizerFrame(tk.Frame):
