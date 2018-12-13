@@ -1,7 +1,4 @@
 import os
-import sys
-sys.path.append('.')
-sys.path.append('..')
 
 import warnings
 warnings.filterwarnings("ignore")
