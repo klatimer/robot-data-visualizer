@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/klatimer/robot-data-visualizer.svg?branch=master)](https://travis-ci.org/klatimer/robot-data-visualizer)
 
+# Robot Data Visualizer
+
+Ken Latimer, Ray Adler, Hao Wu and Qioge Li
+
 
 ## Overview
 
