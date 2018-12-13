@@ -5,8 +5,12 @@ python:
 cache: pip
 before_install:
   - chmod +x robot_data_visualizer/test/run_tests.py
-  - chmod +x robot_data_visualizer/test/test_data_loader.py
   - chmod +x robot_data_visualizer/test/test_data_manager.py
+  - chmod +x robot_data_visualizer/test/test_download_tar.py
+  - chmod +x robot_data_visualizer/test/test_tar_extract.py
+  - chmod +x robot_data_visualizer/test/test_get_dates_umich.py
+  - chmod +x robot_data_visualizer/test/test_threshold_lidar.py
+  - chmod +x robot_data_visualizer/test/test_time_convert.py
 install:
   - pip install -r requirements.txt
 script:
