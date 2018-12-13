@@ -2,7 +2,6 @@ import unittest
 import sys
 sys.path.append('.')
 sys.path.append('..')
-sys.path.append('../..')
 from robot_data_visualizer.get_dates_umich import get_dates_umich
 
 class TestGetDatesUmich(unittest.TestCase):
