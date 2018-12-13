@@ -9,8 +9,8 @@ from .download_tar import download_tar
 from .read_hokuyo_30m import read_hokuyo
 from .tar_extract import tar_extract
 from .get_dates_umich import get_dates_umich
-from .lidar_viewer import hokuyo_plot
-from .lidar_viewer import threshold_lidar_pts
+from .view_lidar import hokuyo_plot
+from .view_lidar import threshold_lidar_pts
 from .time_convert import epoch_to_date_time
 
-__all__ = ['DataLoader', 'DataManager', 'download_tar', 'get_dates_umich', 'map_for_gps', 'read_hokuyo', 'StaticMapBaseLayer', 'tar_extract', 'hokuyo_plot', 'lidar_viewer', 'threshold_lidar_pts', 'epoch_to_date_time']
+__all__ = ['DataLoader', 'DataManager', 'download_tar', 'get_dates_umich', 'map_for_gps', 'read_hokuyo', 'StaticMapBaseLayer', 'tar_extract', 'hokuyo_plot', 'threshold_lidar_pts', 'epoch_to_date_time']
