@@ -1,4 +1,6 @@
 import sys
+import os
+os.chdir(os.path.abspath('.'))
 sys.path.append('.')
 sys.path.append('..')
 import unittest
