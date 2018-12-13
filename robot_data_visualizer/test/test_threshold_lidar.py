@@ -2,8 +2,7 @@ import sys
 import unittest
 sys.path.append('.')
 sys.path.append('..')
-from robot_data_visualizer.threshold_lidar import threshold_lidar_pts
-
+from robot_data_visualizer.view_lidar import threshold_lidar_pts
 from robot_data_visualizer.data_manager import DataManager
 
 class BasicTest(unittest.TestCase):
