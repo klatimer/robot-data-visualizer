@@ -13,4 +13,4 @@ from .lidar_viewer import hokuyo_plot
 from .lidar_viewer import threshold_lidar_pts
 from .time_convert import epoch_to_date_time
 
-__all__ = ['DataLoader', 'DataManager', 'download_tar', 'get_dates_umich', 'map_for_gps', 'read_hokuyo', 'StaticMapBaseLayer', 'tar_extract', 'hokuyo_plot', 'threshold_lidar_pts', 'epoch_to_date_time']
+__all__ = ['DataLoader', 'DataManager', 'download_tar', 'get_dates_umich', 'map_for_gps', 'read_hokuyo', 'StaticMapBaseLayer', 'tar_extract', 'hokuyo_plot', 'lidar_viewer', 'threshold_lidar_pts', 'epoch_to_date_time']
