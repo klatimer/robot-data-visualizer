@@ -2,6 +2,7 @@ import sys
 import unittest
 sys.path.append('.')
 sys.path.append('..')
+sys.path.append('../..')
 
 from robot_data_visualizer.threshold_lidar import threshold_lidar_pts
 

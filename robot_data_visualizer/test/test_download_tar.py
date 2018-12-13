@@ -3,6 +3,7 @@ import os
 import sys
 sys.path.append('.')
 sys.path.append('..')
+sys.path.append('../..')
 from robot_data_visualizer.download_tar import download_tar
 from robot_data_visualizer.download_tar import ensure_data_dir_exists
 

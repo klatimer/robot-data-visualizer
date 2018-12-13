@@ -8,7 +8,6 @@ from .data_manager import DataManager
 from .download_tar import download_tar
 from .read_hokuyo_30m import read_hokuyo
 from .tar_extract import tar_extract
-# from .robot_data_visualizer import MainWindow
 from .get_dates_umich import get_dates_umich
 from .lidar_viewer import hokuyo_plot
 from .lidar_viewer import threshold_lidar_pts

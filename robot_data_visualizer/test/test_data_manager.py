@@ -3,6 +3,7 @@ import sys
 import os
 sys.path.append('.')
 sys.path.append('..')
+sys.path.append('../..')
 from robot_data_visualizer.data_manager import DataManager
 
 class TestDataManager(unittest.TestCase):

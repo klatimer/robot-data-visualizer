@@ -1,6 +1,7 @@
 import sys
 sys.path.append('.')
 sys.path.append('..')
+sys.path.append('../..')
 import unittest
 from robot_data_visualizer.time_convert import epoch_to_date_time
 
