@@ -1,4 +1,5 @@
 import os
+os.chdir(os.path.abspath('.'))
 import pickle
 from data_loader import DataLoader
 from read_hokuyo_30m import read_hokuyo
