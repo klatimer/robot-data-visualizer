@@ -13,11 +13,9 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
-import sys
-sys.path.append('..')
 
 import traceback
-from tools.data_manager import DataManager
+from .data_manager import DataManager
 
 #  ICP parameters
 EPS = 0.0001

@@ -1,7 +1,8 @@
 import os
 import sys
-sys.path.append('.')
-sys.path.append('..')
+#sys.path.append('.')
+#sys.path.append('..')
+#sys.path.append('../..')
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -17,11 +18,11 @@ from matplotlib.figure import Figure
 
 import tkinter as tk
 
-from tools.get_dates_umich import get_dates_umich
-from tools.staticmap_for_gps import map_for_gps
-from tools.data_manager import DataManager
-from tools.view_lidar import hokuyo_plot
-from tools.view_lidar import threshold_lidar_pts
+from get_dates_umich import get_dates_umich
+from staticmap_for_gps import map_for_gps
+from data_manager import DataManager
+from view_lidar import hokuyo_plot
+from view_lidar import threshold_lidar_pts
 
 
 class VisualizerFrame(tk.Frame):
@@ -409,7 +410,6 @@ class ControlFrame(tk.Frame):
         tk.Frame.__init__(self, parent, width=400)
         self.parent = parent
         self.root = parent
-        self.slam_control = None
         self.map_control = None
         self.lidar_control = None
         self.widgets()

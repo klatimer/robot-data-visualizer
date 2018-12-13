@@ -4,16 +4,17 @@ python:
   - '3.5'
 cache: pip
 before_install:
-  - chmod +x test/run_tests.py
-  - chmod +x test/test_data_loader.py
-  - chmod +x test/test_data_manager.py
+  - chmod +x robot_data_visualizer/test/run_tests.py
+  - chmod +x robot_data_visualizer/test/test_data_manager.py
+  - chmod +x robot_data_visualizer/test/test_download_tar.py
+  - chmod +x robot_data_visualizer/test/test_tar_extract.py
+  - chmod +x robot_data_visualizer/test/test_get_dates_umich.py
+  - chmod +x robot_data_visualizer/test/test_threshold_lidar.py
 install:
   - pip install -r requirements.txt
 script:
-  - python test/run_tests.py
+  - python robot_data_visualizer/test/run_tests.py
 branches:
   only:
     - master
-    - dev
-    - ken-dev
-    - hao-dev
+    - hao_reconstruct

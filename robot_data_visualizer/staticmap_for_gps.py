@@ -1,9 +1,11 @@
 '''This file is used to generate all points needed for plot in real-time.'''
 
 import os
+import sys
 from staticmap import Line
-from tools.static_map_base_layer import StaticMapBaseLayer
-from tools.data_manager import DataManager
+from data_manager import DataManager
+sys.path.append('..')
+from static_map_base_layer import StaticMapBaseLayer
 
 def generate_coordinates(data_dict):
     '''

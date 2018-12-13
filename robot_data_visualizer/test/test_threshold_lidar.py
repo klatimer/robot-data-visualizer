@@ -1,9 +1,9 @@
 import sys
 import unittest
-import numpy as np
-from threshold_lidar import threshold_lidar_pts
+sys.path.append('.')
 sys.path.append('..')
-from tools.data_manager import DataManager
+from robot_data_visualizer.view_lidar import threshold_lidar_pts
+from robot_data_visualizer.data_manager import DataManager
 
 class BasicTest(unittest.TestCase):
     """setup for unittests."""
