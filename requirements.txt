@@ -1,4 +1,4 @@
-numpy==1.15.1
+numpy==1.22.0
 chardet==3.0.4
 cycler==0.10.0
 dill==0.2.8.2
